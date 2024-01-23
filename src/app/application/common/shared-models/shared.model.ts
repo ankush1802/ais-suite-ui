@@ -6,8 +6,7 @@ export interface MessageRequest {
     parameters: any;
   }
   export interface MessageResponse {
-    response: any;
-    responses: any[];
+    result: any;
     errorMessage: string;
     statusCode: HttpStatusCode;
   }

@@ -1,9 +1,9 @@
 import { EntityService } from "./entity.service";
 
 export interface Entity{
-  entity_Id : number;
-  entity_Title?: string;
-  entity_uid? : string;
+  id : number;
+  title?: string;
+  uid? : string;
   parent_id? : number;
   entity_Sub_Title?:string;
   entity_Description?:string;
@@ -19,8 +19,8 @@ export interface Entity{
   entity_Email_2?:string;
   entity_Email_3?:string;
   entity_Website?:string;
-  entity_Active:boolean;
-  entity_CreatedOn:string;
+  active:boolean;
+  createdOn:string;
 }
 export interface IManageEntityDialogData {
   service: EntityService;
@@ -30,6 +30,8 @@ export interface IManageEntityDialogData {
 
 export interface EntityList {
     id?: string;
-    name?: string;
-    status?: boolean;
+    title?: string;
+    active?: boolean;
+    publishby? : string;
+    publishon? : string;
 }

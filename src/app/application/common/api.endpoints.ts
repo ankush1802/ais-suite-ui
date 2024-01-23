@@ -1,7 +1,7 @@
 
 export enum ApiBaseUrls {
     authbaseUrl = 'https://localhost:8000/',
-    entitybaseUrl = 'https://localhost:7034/',
+    entitybaseUrl = 'http://localhost/entity-management/',
   }
 
   export enum AuthModouleApiEndpoints {
@@ -9,6 +9,6 @@ export enum ApiBaseUrls {
   }
 
   export enum EntityModouleApiEndpoints {
-    GetAllEntities = 'api/EntityManager/GetEntities',
+    GetAllEntities = 'api/Entity/GetAllEntities',
     SaveEntity='api/EntityManager/SaveEntity'
   }

@@ -1,26 +1,25 @@
 import { EntityService } from "./entity.service";
 
 export interface Entity{
-  id : number;
+  id? : number;
   title?: string;
   uid? : string;
   parent_id? : number;
-  entity_Sub_Title?:string;
-  entity_Description?:string;
-  entity_Address?:string;
-  entity_City?:string;
-  entity_State?:string;
-  entity_Country?:string;
-  entity_Zipcode?:string;
-  entity_Phone_1?:string;
-  entity_Phone_2?:string;
-  entity_Phone_3?:string;
-  entity_Email_1?:string;
-  entity_Email_2?:string;
-  entity_Email_3?:string;
-  entity_Website?:string;
-  active:boolean;
-  createdOn:string;
+  sub_title?:string;
+  description?:string;
+  address?:string;
+  city?:string;
+  state?:string;
+  country?:string;
+  zipcode?:string;
+  phone_1?:string;
+  phone_2?:string;
+  phone_3?:string;
+  email_1?:string;
+  email_2?:string;
+  email_3?:string;
+  website?:string;
+  active?:boolean;
 }
 export interface IManageEntityDialogData {
   service: EntityService;

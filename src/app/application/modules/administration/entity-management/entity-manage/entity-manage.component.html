@@ -1,0 +1,192 @@
+<p-dialog
+    [(visible)]="showEntityManageDialog"
+    [style]="{ width: '450px' }"
+    header="Manage Entity"
+    [modal]="true"
+    class="p-fluid"
+    [closable]="false"
+>
+    <ng-template pTemplate="content">
+        <!-- <img
+                    [src]="'assets/demo/images/product/' + product.image"
+                    [alt]="product.image"
+                    width="150"
+                    class="mt-0 mx-auto mb-5 block shadow-2"
+                    *ngIf="product.image"
+                /> -->
+        <div class="field">
+            <label for="name">Title</label>
+            <input
+                type="text"
+                pInputText
+                id="name"
+                [(ngModel)]="entity.title"
+                required
+                autofocus
+                [ngClass]="{
+                    'ng-invalid ng-dirty': submitted && !entity.title
+                }"
+            />
+            <small
+                class="ng-dirty ng-invalid"
+                *ngIf="submitted && !entity.title"
+                >Title is required.</small
+            >
+        </div>
+        <div class="field">
+            <label for="sub_title">Sub Title</label>
+            <input
+                type="text"
+                pInputText
+                id="sub_title"
+                [(ngModel)]="entity.sub_title"
+            />
+        </div>
+
+        <div class="field">
+            <label for="active">Active</label><br />
+            <p-inputSwitch [(ngModel)]="entity.active"></p-inputSwitch>
+        </div>
+        <div class="field">
+            <label for="city">City</label>
+            <input
+                type="text"
+                pInputText
+                id="city"
+                [(ngModel)]="entity.city"
+            />
+        </div>
+        <div class="field">
+            <label for="state">State</label>
+            <input
+                type="text"
+                pInputText
+                id="state"
+                [(ngModel)]="entity.state"
+            />
+        </div>
+        <div class="field">
+            <label for="country">Country</label>
+            <input
+                type="text"
+                pInputText
+                id="country"
+                [(ngModel)]="entity.country"
+            />
+        </div>
+        <div class="field">
+            <label for="zipcode">Zipcode</label>
+            <input
+                type="text"
+                pInputText
+                id="zipcode"
+                [(ngModel)]="entity.zipcode"
+            />
+        </div>
+        <div class="field">
+            <label for="phone_1">Phone Number 1</label>
+            <input
+                type="text"
+                pInputText
+                id="phone_1"
+                [(ngModel)]="entity.phone_1"
+            />
+        </div>
+        <div class="field">
+            <label for="phone_2">Phone Number 2</label>
+            <input
+                type="text"
+                pInputText
+                id="phone_2"
+                [(ngModel)]="entity.phone_2"
+            />
+        </div>
+        <div class="field">
+            <label for="phone_3">Phone Number 3</label>
+            <input
+                type="text"
+                pInputText
+                id="phone_3"
+                [(ngModel)]="entity.phone_3"
+            />
+        </div>
+        <div class="field">
+            <label for="email_1">Email 1</label>
+            <input
+                type="text"
+                pInputText
+                id="email_1"
+                [(ngModel)]="entity.email_1"
+            />
+        </div>
+        <div class="field">
+            <label for="email_2">Email 2</label>
+            <input
+                type="text"
+                pInputText
+                id="email_2"
+                [(ngModel)]="entity.email_2"
+            />
+        </div>
+        <div class="field">
+            <label for="email_3">Email 3</label>
+            <input
+                type="text"
+                pInputText
+                id="email_3"
+                [(ngModel)]="entity.email_3"
+            />
+        </div>
+        <div class="field">
+            <label for="website">Website</label>
+            <input
+                type="text"
+                pInputText
+                id="website"
+                [(ngModel)]="entity.website"
+            />
+        </div>
+        <div class="field">
+            <label for="description">Description</label>
+            <textarea
+                id="description"
+                pInputTextarea
+                [(ngModel)]="entity.description"
+                required
+                rows="3"
+                cols="20"
+            ></textarea>
+        </div>
+        <div class="field">
+            <label for="address">Address</label>
+            <textarea
+                id="address"
+                pInputTextarea
+                [(ngModel)]="entity.address"
+                required
+                rows="3"
+                cols="20"
+            ></textarea>
+        </div>
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button
+            pButton
+            pRipple
+            label="Cancel"
+            icon="pi pi-times"
+            class="p-button-text"
+            (click)="hideDialog()"
+        ></button>
+        <button
+            pButton
+            pRipple
+            label="Save"
+            icon="pi pi-check"
+            class="p-button-text"
+            (click)="saveEntity()"
+        ></button>
+    </ng-template>
+</p-dialog>

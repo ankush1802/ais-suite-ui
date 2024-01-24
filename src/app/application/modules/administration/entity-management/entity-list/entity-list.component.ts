@@ -8,23 +8,22 @@ import { MessageResponse } from 'src/app/application/common/shared-models/shared
 import { Entity, EntityList } from '../entity.model';
 
 @Component({
-    templateUrl: './entity-list.component.html',
-    providers: [MessageService],
+    templateUrl: './entity-list.component.html'
 })
 export class EntityListComponent implements OnInit {
-    productDialog: boolean = false;
+    manageEntityDialogOpen: boolean = false;
 
     deleteProductDialog: boolean = false;
 
     deleteProductsDialog: boolean = false;
 
-    products: Product[] = [];
+    entities: Entity[] = [];
 
-    product: Product = {};
+    entity: Entity = {};
 
-    selectedProducts: Product[] = [];
+    selectedEntities: Entity[] = [];
 
-    submitted: boolean = false;
+
 
     cols: any[] = [];
 
@@ -33,7 +32,6 @@ export class EntityListComponent implements OnInit {
     rowsPerPageOptions = [5, 10, 20];
 
     constructor(
-        private productService: ProductService,
         private messageService: MessageService,
         private entityProvider: EntityService
     ) {}
@@ -47,7 +45,7 @@ export class EntityListComponent implements OnInit {
         this.loading = true;
     }
 
-    //#region entity
+    //#region entity listing
     filters = [];
     isFirstLoad: boolean = true;
     pageSize = 10;
@@ -66,7 +64,11 @@ export class EntityListComponent implements OnInit {
             .getAllEntities({
                 pagenumber: this.pageIndex,
                 size: this.pageSize,
-                sortOptions : {sortField : this.gridFilters.sortField, sortOrder : this.gridFilters.sortOrder === 1 ? 'asc': 'desc'}
+                sortOptions: {
+                    sortField: this.gridFilters.sortField,
+                    sortOrder:
+                        this.gridFilters.sortOrder === 1 ? 'asc' : 'desc',
+                },
             })
             .subscribe((response: MessageResponse) => {
                 this.loading = false;
@@ -87,30 +89,33 @@ export class EntityListComponent implements OnInit {
     }
     //#endregion
 
+    //#region entity crud
     openNew() {
-        this.product = {};
-        this.submitted = false;
-        this.productDialog = true;
+        this.entity = {};
+        this.manageEntityDialogOpen = true;
     }
-
+    closeEntityManageDialog(value : boolean){
+        this.manageEntityDialogOpen = value;
+    }
+    //#endregion
     deleteSelectedProducts() {
         this.deleteProductsDialog = true;
     }
 
-    editProduct(product: Product) {
-        this.product = { ...product };
-        this.productDialog = true;
+    editProduct(product: Entity) {
+        this.entity = { ...product };
+        this.manageEntityDialogOpen = true;
     }
 
-    deleteProduct(product: Product) {
+    deleteProduct(product: Entity) {
         this.deleteProductDialog = true;
-        this.product = { ...product };
+        this.entity = { ...product };
     }
 
     confirmDeleteSelected() {
         this.deleteProductsDialog = false;
-        this.products = this.products.filter(
-            (val) => !this.selectedProducts.includes(val)
+        this.entities = this.entities.filter(
+            (val) => !this.selectedEntities.includes(val)
         );
         this.messageService.add({
             severity: 'success',
@@ -118,13 +123,13 @@ export class EntityListComponent implements OnInit {
             detail: 'Products Deleted',
             life: 3000,
         });
-        this.selectedProducts = [];
+        this.selectedEntities = [];
     }
 
     confirmDelete() {
         this.deleteProductDialog = false;
-        this.products = this.products.filter(
-            (val) => val.id !== this.product.id
+        this.entities = this.entities.filter(
+            (val) => val.id !== this.entity.id
         );
         this.messageService.add({
             severity: 'success',
@@ -132,63 +137,19 @@ export class EntityListComponent implements OnInit {
             detail: 'Product Deleted',
             life: 3000,
         });
-        this.product = {};
+        this.entity = {};
     }
 
-    hideDialog() {
-        this.productDialog = false;
-        this.submitted = false;
-    }
 
-    saveProduct() {
-        this.submitted = true;
-
-        if (this.product.name?.trim()) {
-            if (this.product.id) {
-                // @ts-ignore
-                this.product.inventoryStatus = this.product.inventoryStatus
-                    .value
-                    ? this.product.inventoryStatus.value
-                    : this.product.inventoryStatus;
-                this.products[this.findIndexById(this.product.id)] =
-                    this.product;
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Product Updated',
-                    life: 3000,
-                });
-            } else {
-                this.product.id = this.createId();
-                this.product.code = this.createId();
-                this.product.image = 'product-placeholder.svg';
-                // @ts-ignore
-                this.product.inventoryStatus = this.product.inventoryStatus
-                    ? this.product.inventoryStatus.value
-                    : 'INSTOCK';
-                this.products.push(this.product);
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Product Created',
-                    life: 3000,
-                });
-            }
-
-            this.products = [...this.products];
-            this.productDialog = false;
-            this.product = {};
-        }
-    }
 
     findIndexById(id: string): number {
         let index = -1;
-        for (let i = 0; i < this.products.length; i++) {
-            if (this.products[i].id === id) {
-                index = i;
-                break;
-            }
-        }
+        // for (let i = 0; i < this.products.length; i++) {
+        //     if (this.products[i].id === id) {
+        //         index = i;
+        //         break;
+        //     }
+        // }
 
         return index;
     }

@@ -16,6 +16,9 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { DialogModule } from 'primeng/dialog';
 import { EntityListComponent } from './entity-list/entity-list.component';
 import { EntityService } from './entity.service';
+import { ManageEntityComponent } from './entity-manage/entity-manage.component';
+import { MessageService } from 'primeng/api';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 @NgModule({
     imports: [
@@ -33,11 +36,13 @@ import { EntityService } from './entity.service';
         DropdownModule,
         RadioButtonModule,
         InputNumberModule,
-        DialogModule
+        DialogModule,
+        InputSwitchModule
     ],
-    declarations: [EntityListComponent],
+    declarations: [EntityListComponent,ManageEntityComponent],
      // A list of services this child module shares between components.
      providers: [
+        MessageService,
         EntityService
     ]
 })

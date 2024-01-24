@@ -6,7 +6,7 @@ import { MessageResponse } from "src/app/application/common/shared-models/shared
 
 @Injectable()
 export class EntityService {
-    public manageEntityDialogOpen: boolean = false;
+
   constructor(protected http: HttpClient) {}
 
   /**

@@ -6,14 +6,15 @@ import { ProductService } from 'src/app/demo/service/product.service';
 import { EntityService } from '../entity.service';
 import { MessageResponse } from 'src/app/application/common/shared-models/shared.model';
 import { Entity, EntityList } from '../entity.model';
+import { HttpStatusCode } from '@angular/common/http';
 
 @Component({
-    templateUrl: './entity-list.component.html'
+    templateUrl: './entity-list.component.html',
 })
 export class EntityListComponent implements OnInit {
     manageEntityDialogOpen: boolean = false;
-
-    deleteProductDialog: boolean = false;
+    deleteEntityDialog: boolean = false;
+    msgDeleteConfirmationDialog: string;
 
     deleteProductsDialog: boolean = false;
 
@@ -22,8 +23,6 @@ export class EntityListComponent implements OnInit {
     entity: Entity = {};
 
     selectedEntities: Entity[] = [];
-
-
 
     cols: any[] = [];
 
@@ -94,80 +93,78 @@ export class EntityListComponent implements OnInit {
         this.entity = {};
         this.manageEntityDialogOpen = true;
     }
-    closeEntityManageDialog(value : boolean){
+    closeEntityManageDialog(value: boolean) {
         this.manageEntityDialogOpen = value;
     }
-    //#endregion
-    deleteSelectedProducts() {
-        this.deleteProductsDialog = true;
+    deleteEntity(entity: Entity) {
+        this.entity = entity;
+        this.deleteEntityDialog = true;
+        this.msgDeleteConfirmationDialog = `<span>Are you sure you want to delete <b>${entity.title}</b>?</span>`;
     }
-
-    editProduct(product: Entity) {
-        this.entity = { ...product };
-        this.manageEntityDialogOpen = true;
+    closeConfirmationDialog(value: boolean) {
+        this.deleteEntityDialog = value;
     }
-
-    deleteProduct(product: Entity) {
-        this.deleteProductDialog = true;
-        this.entity = { ...product };
-    }
-
-    confirmDeleteSelected() {
-        this.deleteProductsDialog = false;
-        this.entities = this.entities.filter(
-            (val) => !this.selectedEntities.includes(val)
-        );
-        this.messageService.add({
-            severity: 'success',
-            summary: 'Successful',
-            detail: 'Products Deleted',
-            life: 3000,
-        });
-        this.selectedEntities = [];
-    }
-
-    confirmDelete() {
-        this.deleteProductDialog = false;
-        this.entities = this.entities.filter(
-            (val) => val.id !== this.entity.id
-        );
-        this.messageService.add({
-            severity: 'success',
-            summary: 'Successful',
-            detail: 'Product Deleted',
-            life: 3000,
-        });
-        this.entity = {};
-    }
-
-
-
-    findIndexById(id: string): number {
-        let index = -1;
-        // for (let i = 0; i < this.products.length; i++) {
-        //     if (this.products[i].id === id) {
-        //         index = i;
-        //         break;
-        //     }
-        // }
-
-        return index;
-    }
-
-    createId(): string {
-        let id = '';
-        const chars =
-            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        for (let i = 0; i < 5; i++) {
-            id += chars.charAt(Math.floor(Math.random() * chars.length));
+    refreshEntityManageDialog(value: boolean) {
+        if (value) {
+            this.buildAndQuery();
         }
-        return id;
     }
-
-    onGlobalFilter(table: Table, event: Event) {
-        table.filterGlobal(
-            (event.target as HTMLInputElement).value,
-            'contains'
-        );
+    markEntityDelete(value: boolean) {
+        if (value) {
+            let entitiesIds = [] as number[];
+            if (this.selectedEntities.length > 0) {
+                for (let i = 0; i < this.selectedEntities.length; i++) {
+                    entitiesIds.push(this.selectedEntities[i].id);
+                }
+            } else {
+                entitiesIds.push(this.entity.id);
+            }
+            this.entityProvider
+                .deleteEntities({ ids: entitiesIds })
+                .subscribe((response: MessageResponse) => {
+                    debugger;
+                    if (response.statusCode === HttpStatusCode.Ok) {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Successful',
+                            detail: 'Entity Deleted',
+                            life: 3000,
+                        });
+                        this.buildAndQuery();
+                    } else {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: response.errorMessage,
+                            life: 3000,
+                        });
+                    }
+                });
+        }
     }
+    deleteSelectedEntities() {
+        const count = this.selectedEntities.length;
+        this.msgDeleteConfirmationDialog = `<span>Are you sure you want to delete <b>${count}</b> entities?</span>`;
+        this.deleteEntityDialog = true;
+    }
+    editEntity(entity: Entity) {
+        this.entityProvider
+            .GetEntityById({
+                id: entity.id,
+            })
+            .subscribe((response: MessageResponse) => {
+                if (response.statusCode === HttpStatusCode.Ok) {
+                    this.entity = response.result as Entity;
+                    this.manageEntityDialogOpen = true;
+                } else {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: response.errorMessage,
+                        life: 3000,
+                    });
+                }
+            });
+    }
+    //#endregion
 }

@@ -10,5 +10,7 @@ export enum ApiBaseUrls {
 
   export enum EntityModouleApiEndpoints {
     GetAllEntities = 'api/Entity/GetAllEntities',
-    SaveEntity='api/EntityManager/SaveEntity'
+    GetEntityById = 'api/Entity/GetEntityById',
+    SaveEntity='api/Entity/SaveEntity',
+    DeleteEntities='api/Entity/DeleteEntities'
   }

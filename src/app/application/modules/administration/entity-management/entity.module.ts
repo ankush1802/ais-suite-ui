@@ -19,6 +19,7 @@ import { EntityService } from './entity.service';
 import { ManageEntityComponent } from './entity-manage/entity-manage.component';
 import { MessageService } from 'primeng/api';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { ConfirmationDialogComponent } from 'src/app/application/common/confirmation-dialog/confirmation-dialog.component';
 
 @NgModule({
     imports: [
@@ -39,7 +40,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
         DialogModule,
         InputSwitchModule
     ],
-    declarations: [EntityListComponent,ManageEntityComponent],
+    declarations: [EntityListComponent,ManageEntityComponent,ConfirmationDialogComponent],
      // A list of services this child module shares between components.
      providers: [
         MessageService,

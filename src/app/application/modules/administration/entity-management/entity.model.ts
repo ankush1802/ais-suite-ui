@@ -5,19 +5,19 @@ export interface Entity{
   title?: string;
   uid? : string;
   parent_id? : number;
-  sub_title?:string;
+  subtitle?:string;
   description?:string;
   address?:string;
   city?:string;
   state?:string;
   country?:string;
   zipcode?:string;
-  phone_1?:string;
-  phone_2?:string;
-  phone_3?:string;
-  email_1?:string;
-  email_2?:string;
-  email_3?:string;
+  phone1?:string;
+  phone2?:string;
+  phone3?:string;
+  email1?:string;
+  email2?:string;
+  email3?:string;
   website?:string;
   active?:boolean;
 }

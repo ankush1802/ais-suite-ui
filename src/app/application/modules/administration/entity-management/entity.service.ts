@@ -19,9 +19,21 @@ export class EntityService {
       request
     );
   }
+  public GetEntityById(request: any) {
+    return this.http.post<MessageResponse>(
+      `${ApiBaseUrls.entitybaseUrl}${EntityModouleApiEndpoints.GetEntityById}`,
+      request
+    );
+  }
   public saveEntity(request: Entity) {
     return this.http.post<MessageResponse>(
       `${ApiBaseUrls.entitybaseUrl}${EntityModouleApiEndpoints.SaveEntity}`,
+      request
+    );
+  }
+  public deleteEntities(request: any) {
+    return this.http.post<MessageResponse>(
+      `${ApiBaseUrls.entitybaseUrl}${EntityModouleApiEndpoints.DeleteEntities}`,
       request
     );
   }

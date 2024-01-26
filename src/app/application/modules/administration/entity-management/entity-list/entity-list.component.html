@@ -19,9 +19,9 @@
                             label="Delete"
                             icon="pi pi-trash"
                             class="p-button-danger"
-                            (click)="deleteSelectedProducts()"
+                            (click)="deleteSelectedEntities()"
                             [disabled]="
-                                !selectedProducts || !selectedProducts.length
+                                !selectedEntities || !selectedEntities.length
                             "
                         ></button>
                     </div>
@@ -134,14 +134,14 @@
                                     pRipple
                                     icon="pi pi-pencil"
                                     class="p-button-rounded p-button-success mr-2"
-                                    (click)="editProduct(entity)"
+                                    (click)="editEntity(entity)"
                                 ></button>
                                 <button
                                     pButton
                                     pRipple
                                     icon="pi pi-trash"
                                     class="p-button-rounded p-button-warning"
-                                    (click)="deleteProduct(entity)"
+                                    (click)="deleteEntity(entity)"
                                 ></button>
                             </div>
                         </td>
@@ -152,7 +152,19 @@
         <app-manage-entity
             [showEntityManageDialog]="manageEntityDialogOpen"
             (closeEntityManageDialogEvent)="closeEntityManageDialog($event)"
+            (refreshEntityGridDialogEvent)="refreshEntityManageDialog($event)"
             [entity]="entity"
         ></app-manage-entity>
+        <app-confirmation-Dialog
+            [showConfirmationDialog]="deleteEntityDialog"
+            [msgConfirmationDialog]="msgDeleteConfirmationDialog"
+            [showYesButton]="true"
+            [yesButtonText]="'Yes'"
+            [showNoButton]="true"
+            [noButtonText]="'No'"
+            (closeConfirmationDialogEvent)="closeConfirmationDialog($event)"
+            (confirmationDialogActionEvent)="markEntityDelete($event)"
+        >
+        </app-confirmation-Dialog>
     </div>
 </div>

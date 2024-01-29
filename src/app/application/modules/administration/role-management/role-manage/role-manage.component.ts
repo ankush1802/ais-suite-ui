@@ -12,12 +12,14 @@ import {
     FormGroup,
     Validators,
 } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-manage-role',
     templateUrl: './role-manage.component.html',
 })
 export class ManageRoleComponent implements OnInit {
+    //#region Variables
     breadcrumbItems: MenuItem[] = [];
     home: MenuItem | undefined;
     nodes!: any[];
@@ -25,13 +27,10 @@ export class ManageRoleComponent implements OnInit {
     submitted: boolean = false;
     role: Role = {} as Role;
     permissionGroups: PermissionGroup[];
+    //#endregion
 
-    //#region
+    //#region Role Form Setup
     roleForm: FormGroup;
-    saveRole() {
-        const formValue = this.roleForm.value;
-        debugger;
-    }
     buildRoleFormGroup() {
         this.roleForm = this.fb.group({
             title: ['', Validators.required],
@@ -40,7 +39,7 @@ export class ManageRoleComponent implements OnInit {
             permissiongroups: this.fb.array([]),
         });
     }
-    //Helper method, which returns the employees FormArray from the model empForm
+    //Helper method, which returns the permissiongroups FormArray from the model
     permissiongroups(): FormArray {
         return this.roleForm.get('permissiongroups') as FormArray;
     }
@@ -55,20 +54,32 @@ export class ManageRoleComponent implements OnInit {
         this.permissiongroups().push(this.newPermissionGroup(permissionGroup));
     }
 
-    permissions(permIndex: number): FormArray {
+    permissions(groupIndex: number): FormArray {
         return this.permissiongroups()
-            .at(permIndex)
+            .at(groupIndex)
             .get('permissions') as FormArray;
     }
     newPermission(permission: Permission): FormGroup {
+        let permssionValue = false;
+        if (
+            this.role.id &&
+            this.role.id > 0 &&
+            this.role.permissions &&
+            this.role.permissions.length > 0
+        ) {
+            const permissionIndex = this.role.permissions.findIndex(f=>f.permissionid === permission.permissionid);
+            if(permissionIndex > -1){
+                permssionValue = true;
+            }
+        }
         return this.fb.group({
             permissionid: permission.permissionid,
             permissiontitle: permission.permissiontitle,
-            permissionvalue: false,
+            permissionvalue: permssionValue,
         });
     }
-    addPermission(permIndex: number, permission: Permission) {
-        this.permissions(permIndex).push(this.newPermission(permission));
+    addPermission(groupIndex: number, permission: Permission) {
+        this.permissions(groupIndex).push(this.newPermission(permission));
     }
     permission_control(groupIndex: number, permIndex: number): any {
         const permissionarray = this.permissiongroups()
@@ -76,43 +87,64 @@ export class ManageRoleComponent implements OnInit {
             .get('permissions') as FormArray;
         return permissionarray.at(permIndex);
     }
-
-    bindPermissionGroups() {
-        this.permissionGroups.forEach((group: PermissionGroup) => {
-            this.addPermissionGroup(group);
-        });
-        this.bindPermissions();
-    }
-    bindPermissions() {
-        this.permissionGroups.forEach(
-            (element: PermissionGroup, index: number) => {
-                element.permissions.forEach((permission: Permission) => {
-                    this.addPermission(index, permission);
-                });
-            }
-        );
-    }
     //#endregion
 
+    //#region Angular lifecycle
     constructor(
         private entityProvider: EntityService,
         private roleProvider: RoleService,
         private messageService: MessageService,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private activatedRoute: ActivatedRoute
     ) {
         this.buildRoleFormGroup();
     }
     async ngOnInit(): Promise<void> {
+        await this.checkRoleDetails();
+        this.pageSetting();
+        await this.getEntityTree();
+        await this.getPermissions();
+    }
+    //#endregion
+
+    //#region page settings
+    pageSetting() {
         this.breadcrumbItems = [
             { label: 'Administration' },
             { label: 'Roles', routerLink: '/administration/roles' },
             { label: 'Manage Role' },
         ];
         this.home = { icon: 'pi pi-home', routerLink: '/' };
-        await this.getEntityTree();
-        await this.getPermissions();
     }
+    //#endregion
 
+    //#region Helper Method(s)
+    async checkRoleDetails() {
+        this.activatedRoute.params.subscribe(
+            (params: any) => (this.role.id = params.id)
+        );
+        if (this.role.id && this.role.id > 0) {
+            //retrieve role details first
+            this.roleProvider
+                .getRoleById({ id: this.role.id })
+                .subscribe((response: MessageResponse) => {
+                    if (response.statusCode === HttpStatusCode.Ok) {
+                        this.role = response.result.role;
+                        this.roleForm.patchValue({
+                            title: this.role.title,
+                            description: this.role.description,
+                        });
+                    } else {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: response.errorMessage,
+                            life: 3000,
+                        });
+                    }
+                });
+        }
+    }
     async getEntityTree() {
         await this.entityProvider
             .getEntityTree({ id: 0 })
@@ -124,11 +156,10 @@ export class ManageRoleComponent implements OnInit {
                         this.role.entityId &&
                         this.role.entityId > 0
                     ) {
-                        this.selectedNodes = this.nodes.filter(
+                        const selectedEntity = this.nodes.filter(
                             (f) => f.key == this.role.entityId
                         );
-                    } else {
-                        this.selectedNodes = this.nodes[0];
+                        this.roleForm.patchValue({ entity: selectedEntity[0] });
                     }
                 } else {
                     this.messageService.add({
@@ -157,4 +188,94 @@ export class ManageRoleComponent implements OnInit {
                 }
             });
     }
+    bindPermissionGroups() {
+        this.permissionGroups.forEach((group: PermissionGroup) => {
+            this.addPermissionGroup(group);
+        });
+        this.bindPermissions();
+    }
+    bindPermissions() {
+        this.permissionGroups.forEach(
+            (element: PermissionGroup, index: number) => {
+                element.permissions.forEach((permission: Permission) => {
+                    this.addPermission(index, permission);
+                });
+            }
+        );
+    }
+    checkUncheckAll(event: any, groupIndex: number) {
+        const permissions = this.permissions(groupIndex);
+        permissions.controls.forEach((control: FormGroup) => {
+            control.patchValue({ permissionvalue: event.checked });
+        });
+    }
+    saveRole() {
+        const formValue = this.roleForm.value;
+        if (formValue.entity) {
+            if (formValue.title.trim().length > 0) {
+                let roleRequest = {} as Role;
+                roleRequest.createdBy = 1;
+                if(this.role && this.role.id >0){
+                    roleRequest.id = this.role.id;
+                }
+                roleRequest.description = formValue.description;
+                roleRequest.entityId = formValue.entity.key;
+                roleRequest.title = formValue.title;
+                roleRequest.permissions = [] as Permission[];
+                formValue.permissiongroups.forEach((group: any) => {
+                    const permissions = group.permissions as any[];
+                    const selectedPermissions = permissions.filter(
+                        (d) => d.permissionvalue === true
+                    );
+                    if (selectedPermissions && selectedPermissions.length > 0) {
+                        selectedPermissions.forEach(
+                            (permission: Permission) => {
+                                roleRequest.permissions.push(permission);
+                            }
+                        );
+                    }
+                });
+                this.roleProvider
+                    .saveRole(roleRequest)
+                    .subscribe((response: MessageResponse) => {
+                        if (response.statusCode === HttpStatusCode.Ok) {
+                            if(roleRequest.id < 1){
+                                this.roleForm.reset();
+                            }
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Successful',
+                                detail: 'Role Saved Successfully.',
+                                life: 3000,
+                            });
+                        } else {
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: 'Error',
+                                detail: response.errorMessage,
+                                life: 3000,
+                            });
+                        }
+                    });
+            } else {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Please mention role title.',
+                    life: 3000,
+                });
+            }
+        } else {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Please choose entity to create a role.',
+                life: 3000,
+            });
+        }
+
+        //check entity is selected or not
+        //check form is valid or not
+    }
+    //#endregion
 }

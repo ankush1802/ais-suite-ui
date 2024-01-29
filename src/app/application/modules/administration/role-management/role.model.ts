@@ -3,6 +3,8 @@ export interface Role{
     title?: string;
     description?:string;
     entityId : number;
+    permissions?:Permission[];
+    createdBy? : number;
   }
 
   export interface RolesList {

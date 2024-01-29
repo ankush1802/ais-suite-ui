@@ -57,7 +57,7 @@ export class RoleListComponent implements OnInit {
             })
             .subscribe((response: MessageResponse) => {
                 this.loading = false;
-                this.allRoles = response.result.entities as RolesList[];
+                this.allRoles = response.result.roles as RolesList[];
                 this.totalRecords = response.result.total;
                 this.isFirstLoad = false;
             });
@@ -76,5 +76,8 @@ export class RoleListComponent implements OnInit {
 
     openNew() {
         this.router.navigateByUrl('/administration/manage-role');
+    }
+    editRole(role : RolesList){
+        this.router.navigateByUrl(`/administration/manage-role/${role.id}`);
     }
 }

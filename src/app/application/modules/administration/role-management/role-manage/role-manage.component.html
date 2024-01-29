@@ -61,7 +61,7 @@
                                         <div class="p-formgrid grid" formArrayName="permissions">
                                             <div class="field col">
                                                 <label for="active">Select All</label><br />
-                                                <p-inputSwitch id="selectAll-{{i}}" (change)="checkUncheckAll($event,item)"></p-inputSwitch>
+                                                <p-inputSwitch id="selectAll-{{groupIndex}}" (onChange)="checkUncheckAll($event,groupIndex)"></p-inputSwitch>
                                             </div>
                                             <div class="field col"  *ngFor="let permission of permissions(groupIndex).controls; let permIndex=index">
                                                 <div [formGroupName]="permIndex">
@@ -78,24 +78,29 @@
 
                         </ng-container>
                     </p-accordion>
+                    <div class="p-formgrid grid">
+                        <div class="col">
+                            <button
+                            pButton
+                            pRipple
+                            type="submit"
+                            label="Save"
+                            icon="pi pi-plus"
+                            class="p-button-success mr-2"
+                        ></button>
 
-                    <button
-                    pButton
-                    pRipple
-                    label="Cancel"
-                    icon="pi pi-times"
-                    class="p-button-text"
+                        </div>
+                        <div class="col">
+                            <button
+                            pButton
+                            pRipple
+                            label="Cancel"
+                            class="p-button-danger"
+                        ></button>
+                        </div>
+                    </div>
 
-                ></button>
-                <button
-                    pButton
-                    pRipple
-                    label="Save"
-                    type="submit"
-                    icon="pi pi-check"
-                    class="p-button-text"
 
-                ></button>
                 </div>
             </div>
         </form>

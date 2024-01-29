@@ -2,7 +2,7 @@
 export enum ApiBaseUrls {
     authbaseUrl = 'https://localhost:8000/',
     entitybaseUrl = 'http://localhost/entity-management/',
-    rolebaseUrl = 'http://localhost/role-management/',
+    rolebaseUrl = 'https://localhost:7216/',
   }
 
   export enum AuthModouleApiEndpoints {
@@ -19,8 +19,8 @@ export enum ApiBaseUrls {
 
   export enum RoleModouleApiEndpoints {
     GetAllRoles = 'api/Role/GetAllRoles',
-    GetEntityById = 'api/Role/GetRoleById',
-    SaveEntity='api/Role/SaveRole',
-    DeleteEntities='api/Role/DeleteRole',
+    GetRoleById = 'api/Role/GetRoleById',
+    SaveRole='api/Role/SaveRole',
+    DeleteRole='api/Role/DeleteRole',
     GetAllPermissions='api/Permission/GetAllPermissions'
   }

@@ -1,0 +1,104 @@
+<div class="grid">
+    <div class="col-12">
+        <form [formGroup]="roleForm" (ngSubmit)="saveRole()">
+            <div class="card px-6 py-6">
+                <p-toast></p-toast>
+                <p-breadcrumb
+                    [model]="breadcrumbItems"
+                    [home]="home"
+                    styleClass="mb-4"
+                ></p-breadcrumb>
+                <div class="card p-fluid">
+                    <h5>Manage Role</h5>
+                    <div class="p-formgrid grid">
+                        <div class="field col">
+                            <label for="entity">Parent Entity</label>
+                            <p-treeSelect
+                                containerStyleClass="w-full"
+                                formControlName="entity"
+                                [options]="nodes"
+                                id="entity"
+                                placeholder="Select Entity"
+                            ></p-treeSelect>
+                        </div>
+                        <div class="field col">
+                            <label for="name">Title</label>
+                            <input
+                                type="text"
+                                pInputText
+                                id="name"
+                                formControlName="title"
+                                required
+                                autofocus
+                                [ngClass]="{
+                                    'ng-invalid ng-dirty': submitted && !role.title
+                                }"
+                            />
+                            <small
+                                class="ng-dirty ng-invalid"
+                                *ngIf="submitted && !role.title"
+                                >Title is required.</small
+                            >
+                        </div>
+                        <div class="field col-12">
+                            <label for="description">Description</label>
+                            <textarea
+                                id="description"
+                                pInputTextarea
+                                formControlName="description"
+                                required
+                                rows="3"
+                                cols="20"
+                            ></textarea>
+                        </div>
+                    </div>
+                    <h5>Permission(s)</h5>
+                    <p-accordion>
+                        <div formArrayName="permissiongroups">
+                            <div *ngFor="let groups of permissiongroups().controls; let groupIndex=index">
+                                <p-accordionTab header="{{permissionGroups[groupIndex].grouptitle}}" class="line-height-3 m-0">
+                                    <div [formGroupName]="groupIndex">
+                                        <div class="p-formgrid grid" formArrayName="permissions">
+                                            <div class="field col">
+                                                <label for="active">Select All</label><br />
+                                                <p-inputSwitch id="selectAll-{{i}}" (change)="checkUncheckAll($event,item)"></p-inputSwitch>
+                                            </div>
+                                            <div class="field col"  *ngFor="let permission of permissions(groupIndex).controls; let permIndex=index">
+                                                <div [formGroupName]="permIndex">
+                                                    <label for="active">{{permission_control(groupIndex,permIndex).value.permissiontitle}}</label><br />
+                                                    <p-inputSwitch formControlName="permissionvalue"></p-inputSwitch>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </p-accordionTab>
+                            </div>
+                        </div>
+                        <ng-container *ngFor="let item of permissionGroups; let i = index">
+
+                        </ng-container>
+                    </p-accordion>
+
+                    <button
+                    pButton
+                    pRipple
+                    label="Cancel"
+                    icon="pi pi-times"
+                    class="p-button-text"
+
+                ></button>
+                <button
+                    pButton
+                    pRipple
+                    label="Save"
+                    type="submit"
+                    icon="pi pi-check"
+                    class="p-button-text"
+
+                ></button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>

@@ -1,3 +1,4 @@
+
 <div class="grid">
     <div class="col-12">
         <div class="card px-6 py-6">
@@ -50,19 +51,19 @@
 
             <p-table
                 #dt
-                [value]="allEntities"
+                [value]="allRoles"
                 [lazy]="true"
-                (onLazyLoad)="loadEntities($event)"
+                (onLazyLoad)="loadRoles($event)"
                 dataKey="id"
                 [columns]="cols"
                 responsiveLayout="scroll"
                 [rows]="pageSize"
-                [globalFilterFields]="['entity_Title', 'entity_Active']"
+                [globalFilterFields]="['title']"
                 [paginator]="true"
                 [rowsPerPageOptions]="pageSizeOptions"
                 [showCurrentPageReport]="true"
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                [(selection)]="selectedEntities"
+                [(selection)]="selectedRoles"
                 selectionMode="multiple"
                 [rowHover]="true"
                 [totalRecords]="totalRecords"
@@ -73,7 +74,7 @@
                     <div
                         class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
                     >
-                        <h5 class="m-0">Manage Entities</h5>
+                        <h5 class="m-0">Manage Roles</h5>
                         <!-- <span class="block mt-2 md:mt-0 p-input-icon-left">
                             <i class="pi pi-search"></i>
                             <input
@@ -97,36 +98,21 @@
                         <th pSortableColumn="title">
                             Name <p-sortIcon field="title"></p-sortIcon>
                         </th>
-                        <th pSortableColumn="active">
-                            Status <p-sortIcon field="active"></p-sortIcon>
-                        </th>
                         <th>Action(s)</th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-entity>
+                <ng-template pTemplate="body" let-role>
                     <tr>
                         <td>
-                            <p-tableCheckbox [value]="entity"></p-tableCheckbox>
+                            <p-tableCheckbox [value]="role"></p-tableCheckbox>
                         </td>
                         <td style="width: auto; min-width: 10rem">
                             <span class="p-column-title">No.</span>
-                            {{ entity.id }}
+                            {{ role.id }}
                         </td>
                         <td style="width: auto; min-width: 10rem">
                             <span class="p-column-title">Name</span>
-                            {{ entity.title }}
-                        </td>
-                        <td style="width: auto; min-width: 10rem">
-                            <span class="p-column-title">Status</span>
-                            <span
-                                [class]="
-                                    'product-badge status-' +
-                                    (entity.active ? 'instock' : 'outofstock')
-                                "
-                                >{{
-                                    entity.active ? "Active" : "In-Active"
-                                }}</span
-                            >
+                            {{ role.title }}
                         </td>
                         <td>
                             <div class="flex">
@@ -135,37 +121,22 @@
                                     pRipple
                                     icon="pi pi-pencil"
                                     class="p-button-rounded p-button-success mr-2"
-                                    (click)="editEntity(entity)"
+                                    (click)="editEntity(role)"
                                 ></button>
                                 <button
                                     pButton
                                     pRipple
                                     icon="pi pi-trash"
                                     class="p-button-rounded p-button-warning"
-                                    (click)="deleteEntity(entity)"
+                                    (click)="deleteEntity(role)"
                                 ></button>
                             </div>
                         </td>
                     </tr>
                 </ng-template>
             </p-table>
+
         </div>
-        <app-manage-entity
-            [showEntityManageDialog]="manageEntityDialogOpen"
-            (closeEntityManageDialogEvent)="closeEntityManageDialog($event)"
-            (refreshEntityGridDialogEvent)="refreshEntityManageDialog($event)"
-            [entity]="entity"
-        ></app-manage-entity>
-        <app-confirmation-Dialog
-            [showConfirmationDialog]="deleteEntityDialog"
-            [msgConfirmationDialog]="msgDeleteConfirmationDialog"
-            [showYesButton]="true"
-            [yesButtonText]="'Yes'"
-            [showNoButton]="true"
-            [noButtonText]="'No'"
-            (closeConfirmationDialogEvent)="closeConfirmationDialog($event)"
-            (confirmationDialogActionEvent)="markEntityDelete($event)"
-        >
-        </app-confirmation-Dialog>
+
     </div>
 </div>

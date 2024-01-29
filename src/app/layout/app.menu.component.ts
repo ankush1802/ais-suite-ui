@@ -23,7 +23,8 @@ export class AppMenuComponent implements OnInit {
             {
                 label: 'Administration',
                 items: [
-                    { label: 'Entities', icon: 'pi pi-fw pi-id-card', routerLink: ['/administration/'] },
+                    { label: 'Entities', icon: 'pi pi-fw pi-building', routerLink: ['/administration/'] },
+                    { label: 'Roles', icon: 'pi pi-fw pi-id-card', routerLink: ['/administration/roles/'] },
                 ]
             },
             {

@@ -7,13 +7,23 @@
     [closable]="false"
 >
     <ng-template pTemplate="content">
-        <!-- <img
-                    [src]="'assets/demo/images/product/' + product.image"
-                    [alt]="product.image"
-                    width="150"
-                    class="mt-0 mx-auto mb-5 block shadow-2"
-                    *ngIf="product.image"
-                /> -->
+        <div class="field">
+            <label for="name">Parent Entity</label>
+            <p-treeSelect
+                containerStyleClass="w-full"
+                [(ngModel)]="selectedNodes"
+                [options]="nodes"
+                placeholder="Select Entity"
+                [ngClass]="{
+                    'ng-invalid ng-dirty': submitted && !entity.parent_id
+                }"
+            ></p-treeSelect>
+            <small
+                class="ng-dirty ng-invalid"
+                *ngIf="submitted && !entity.title"
+                >Parent Entity is required.</small
+            >
+        </div>
         <div class="field">
             <label for="name">Title</label>
             <input
@@ -49,12 +59,7 @@
         </div>
         <div class="field">
             <label for="city">City</label>
-            <input
-                type="text"
-                pInputText
-                id="city"
-                [(ngModel)]="entity.city"
-            />
+            <input type="text" pInputText id="city" [(ngModel)]="entity.city" />
         </div>
         <div class="field">
             <label for="state">State</label>
@@ -168,7 +173,6 @@
                 cols="20"
             ></textarea>
         </div>
-
     </ng-template>
 
     <ng-template pTemplate="footer">

@@ -25,6 +25,12 @@ export class EntityService {
       request
     );
   }
+  public getEntityTree(request: any) {
+    return this.http.post<MessageResponse>(
+      `${ApiBaseUrls.entitybaseUrl}${EntityModouleApiEndpoints.GetEntityTree}`,
+      request
+    );
+  }
   public saveEntity(request: Entity) {
     return this.http.post<MessageResponse>(
       `${ApiBaseUrls.entitybaseUrl}${EntityModouleApiEndpoints.SaveEntity}`,

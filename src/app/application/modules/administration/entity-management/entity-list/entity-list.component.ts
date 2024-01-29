@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Product } from 'src/app/demo/api/product';
-import { LazyLoadEvent, MessageService } from 'primeng/api';
+import { LazyLoadEvent, MenuItem, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { ProductService } from 'src/app/demo/service/product.service';
 import { EntityService } from '../entity.service';
@@ -10,8 +10,11 @@ import { HttpStatusCode } from '@angular/common/http';
 
 @Component({
     templateUrl: './entity-list.component.html',
+    styleUrl:  './entity-list.component.scss'
 })
 export class EntityListComponent implements OnInit {
+    breadcrumbItems: MenuItem[] = [];
+    home: MenuItem | undefined;
     manageEntityDialogOpen: boolean = false;
     deleteEntityDialog: boolean = false;
     msgDeleteConfirmationDialog: string;
@@ -37,11 +40,14 @@ export class EntityListComponent implements OnInit {
 
     ngOnInit() {
         this.cols = [
-            { field: 'id', header: 'Product' },
+            { field: 'id', header: 'id' },
             { field: 'title', header: 'Title' },
-            { field: 'active', header: 'Status' },
+            { field: 'active', header: 'Active' },
         ];
         this.loading = true;
+        this.breadcrumbItems = [{ label: 'Administration' }, { label: 'Entities', routerLink :'/administration/entities' }];
+
+        this.home = { icon: 'pi pi-home', routerLink: '/' };
     }
 
     //#region entity listing

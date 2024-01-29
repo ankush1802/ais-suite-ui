@@ -21,16 +21,51 @@ export class ManageEntityComponent implements OnInit {
     @Output() closeEntityManageDialogEvent = new EventEmitter<boolean>();
     @Output() refreshEntityGridDialogEvent = new EventEmitter<boolean>();
     @Input() entity: Entity;
-
+    nodes!: any[];
+    selectedNodes: any;
     submitted: boolean = false;
 
     constructor(
         private entityProvider: EntityService,
         private messageService: MessageService
-    ) {}
+    ) {
+
+    }
     ngOnInit(): void {}
-    ngOnChanges(changes: SimpleChanges) {
+    ngOnChanges(changes: any) {
         // changes.prop contains the old and the new value...
+        debugger;
+        // const showEntityManageDialogValueChange = changes.showEntityManageDialog as any;
+        // if(showEntityManageDialogValueChange && showEntityManageDialogValueChange.currentValue){
+
+        // }
+        if (this.showEntityManageDialog) {
+            this.entityProvider
+                .getEntityTree({ id: 0 })
+                .subscribe((response: MessageResponse) => {
+                    if (response.statusCode === HttpStatusCode.Ok) {
+                        this.nodes = response.result;
+                        if (
+                            this.entity.id > 0 &&
+                            this.entity.parent_id &&
+                            this.entity.parent_id > 0
+                        ) {
+                            this.selectedNodes = this.nodes.filter(
+                                (f) => f.key == this.entity.parent_id
+                            );
+                        } else {
+                            this.selectedNodes = this.nodes[0];
+                        }
+                    } else {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: response.errorMessage,
+                            life: 3000,
+                        });
+                    }
+                });
+        }
     }
     hideDialog() {
         this.closeEntityManageDialogEvent.emit(false);
@@ -39,7 +74,8 @@ export class ManageEntityComponent implements OnInit {
 
     saveEntity() {
         this.submitted = true;
-        if (this.entity.title?.trim()) {
+        if (this.entity.title?.trim() && this.selectedNodes) {
+            this.entity.parent_id = this.selectedNodes.key;
             this.entityProvider
                 .saveEntity(this.entity)
                 .subscribe((response: MessageResponse) => {
@@ -72,6 +108,13 @@ export class ManageEntityComponent implements OnInit {
                         });
                     }
                 });
+        } else {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Please fill the required information(s).',
+                life: 3000,
+            });
         }
     }
 }

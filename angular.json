@@ -36,6 +36,7 @@
                     },
                     "configurations": {
                         "production": {
+                            "baseHref": "/ais-suite-ui/",
                             "budgets": [
                                 {
                                     "type": "initial",

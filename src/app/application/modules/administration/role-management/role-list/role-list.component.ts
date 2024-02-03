@@ -4,21 +4,28 @@ import { Role, RolesList } from '../role.model';
 import { MessageResponse } from 'src/app/application/common/shared-models/shared.model';
 import { RoleService } from '../role.service';
 import { Router } from '@angular/router';
+import { HttpStatusCode } from '@angular/common/http';
 
 @Component({
     templateUrl: './role-list.component.html',
     styleUrl: './role-list.component.scss',
 })
 export class RoleListComponent implements OnInit {
+    //#region Variables
+    userId: number = 1;
     breadcrumbItems: MenuItem[] = [];
     home: MenuItem | undefined;
     cols: any[] = [];
-    selectedRoles: Role[] = [];
+    role: RolesList;
+    selectedRoles: RolesList[] = [];
+    //#endregion
+
+    //#region Angular Lifecycle
     ngOnInit(): void {
         this.loading = true;
         this.cols = [
             { field: 'id', header: 'id' },
-            { field: 'title', header: 'Title' }
+            { field: 'title', header: 'Title' },
         ];
         this.breadcrumbItems = [
             { label: 'Administration' },
@@ -29,9 +36,11 @@ export class RoleListComponent implements OnInit {
     constructor(
         private messageService: MessageService,
         private roleProvider: RoleService,
-        private router: Router,
+        private router: Router
     ) {}
-    //#region entity listing
+    //#endregion
+
+    //#region role listing
 
     filters = [];
     isFirstLoad: boolean = true;
@@ -74,10 +83,60 @@ export class RoleListComponent implements OnInit {
     }
     //#endregion
 
+    //#region Role Crud
     openNew() {
         this.router.navigateByUrl('/administration/manage-role');
     }
-    editRole(role : RolesList){
+    editRole(role: RolesList) {
         this.router.navigateByUrl(`/administration/manage-role/${role.id}`);
     }
+    deleteRoleDialog: boolean = false;
+    msgDeleteRoleConfirmationDialog: string;
+    deleteRole(role: RolesList) {
+        this.role = role;
+        this.deleteRoleDialog = true;
+        this.msgDeleteRoleConfirmationDialog = `<span>Are you sure you want to delete <b>${role.title}</b>?</span>`;
+    }
+    deleteSelectedRoles() {
+        const count = this.selectedRoles.length;
+        this.msgDeleteRoleConfirmationDialog = `<span>Are you sure you want to delete <b>${count}</b> entities?</span>`;
+        this.deleteRoleDialog = true;
+    }
+    closeConfirmationDialog(value: boolean) {
+        this.deleteRoleDialog = value;
+    }
+    markRoleDelete(value: boolean) {
+        if (value) {
+            let rolesIds = [] as number[];
+            if (this.selectedRoles.length > 0) {
+                for (let i = 0; i < this.selectedRoles.length; i++) {
+                    rolesIds.push(this.selectedRoles[i].id);
+                }
+            } else {
+                rolesIds.push(this.role.id);
+            }
+            this.roleProvider
+                .deleteRoles({ ids: rolesIds, createdBy: this.userId })
+                .subscribe((response: MessageResponse) => {
+                    debugger;
+                    if (response.statusCode === HttpStatusCode.Ok) {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Successful',
+                            detail: 'Role Deleted',
+                            life: 3000,
+                        });
+                        this.buildAndQuery();
+                    } else {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: response.errorMessage,
+                            life: 3000,
+                        });
+                    }
+                });
+        }
+    }
+    //#endregion
 }

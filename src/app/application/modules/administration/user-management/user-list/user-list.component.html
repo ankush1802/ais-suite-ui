@@ -51,9 +51,9 @@
 
             <p-table
                 #dt
-                [value]="allRoles"
+                [value]="allUsers"
                 [lazy]="true"
-                (onLazyLoad)="loadRoles($event)"
+                (onLazyLoad)="loadUsers($event)"
                 dataKey="id"
                 [columns]="cols"
                 responsiveLayout="scroll"
@@ -63,7 +63,7 @@
                 [rowsPerPageOptions]="pageSizeOptions"
                 [showCurrentPageReport]="true"
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                [(selection)]="selectedRoles"
+                [(selection)]="selectedUsers"
                 selectionMode="multiple"
                 [rowHover]="true"
                 [totalRecords]="totalRecords"
@@ -136,7 +136,7 @@
                 </ng-template>
             </p-table>
 
-            <app-confirmation-Dialog
+            <!-- <app-confirmation-Dialog
             [showConfirmationDialog]="deleteRoleDialog"
             [msgConfirmationDialog]="msgDeleteRoleConfirmationDialog"
             [showYesButton]="true"
@@ -146,8 +146,9 @@
             (closeConfirmationDialogEvent)="closeConfirmationDialog($event)"
             (confirmationDialogActionEvent)="markRoleDelete($event)"
         >
-        </app-confirmation-Dialog>
+        </app-confirmation-Dialog> -->
         </div>
 
     </div>
 </div>
+

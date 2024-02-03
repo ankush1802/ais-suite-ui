@@ -8,7 +8,7 @@ export interface Role{
   }
 
   export interface RolesList {
-    id?: string;
+    id?: number;
     title?: string;
     publishby? : string;
     publishon? : string;

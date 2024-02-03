@@ -3,6 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { EntityListComponent } from './entity-management/entity-list/entity-list.component';
 import { RoleListComponent } from './role-management/role-list/role-list.component';
 import { ManageRoleComponent } from './role-management/role-manage/role-manage.component';
+import { UserListComponent } from './user-management/user-list/user-list.component';
+import { ManageUserComponent } from './user-management/user-manage/user-manage.component';
 
 const routes: Routes = [
     {
@@ -11,11 +13,13 @@ const routes: Routes = [
         path: '',
         children: [
             { path: '', redirectTo: 'entities', pathMatch: 'full' },
-            // { path: 'alert-centre', component: AlertCentreComponent, canActivate: [AuthGuard, FeatureToggleGuard] },
             { path: 'entities', component: EntityListComponent },
             { path: 'roles', component: RoleListComponent },
             { path: 'manage-role', component: ManageRoleComponent },
             { path: 'manage-role/:id', component: ManageRoleComponent },
+            { path: 'users', component: UserListComponent },
+            { path: 'manage-user', component: ManageUserComponent },
+            { path: 'manage-user/:id', component: ManageUserComponent },
         ],
     },
 ];

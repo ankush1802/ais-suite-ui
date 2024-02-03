@@ -16,6 +16,12 @@ export class RoleService {
             request
         );
     }
+    public getAllRolesByEntity(request: any) {
+        return this.http.post<MessageResponse>(
+            `${ApiBaseUrls.rolebaseUrl}${RoleModouleApiEndpoints.GetAllRolesByEntity}`,
+            request
+        );
+    }
     public getRoleById(request: any) {
         return this.http.post<MessageResponse>(
             `${ApiBaseUrls.rolebaseUrl}${RoleModouleApiEndpoints.GetRoleById}`,
@@ -30,6 +36,12 @@ export class RoleService {
     public saveRole(request: Role) {
         return this.http.post<MessageResponse>(
             `${ApiBaseUrls.rolebaseUrl}${RoleModouleApiEndpoints.SaveRole}`,
+            request
+        );
+    }
+    public deleteRoles(request : any){
+        return this.http.post<MessageResponse>(
+            `${ApiBaseUrls.rolebaseUrl}${RoleModouleApiEndpoints.DeleteRole}`,
             request
         );
     }

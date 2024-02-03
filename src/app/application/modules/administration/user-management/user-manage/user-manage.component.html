@@ -1,0 +1,100 @@
+<div class="grid">
+    <div class="col-12">
+        <form [formGroup]="userForm" (ngSubmit)="saveUser()">
+            <div class="card px-6 py-6">
+                <p-toast></p-toast>
+                <p-breadcrumb
+                    [model]="breadcrumbItems"
+                    [home]="home"
+                    styleClass="mb-4"
+                ></p-breadcrumb>
+                <div class="card p-fluid">
+                    <h5>Manage User</h5>
+                    <div class="p-formgrid grid">
+                        <div class="field col">
+                            <label for="entity">Parent Entity</label>
+                            <p-treeSelect
+                                containerStyleClass="w-full"
+                                formControlName="entity"
+                                [options]="nodes"
+                                id="entity"
+                                (onNodeSelect)="loadRoles()"
+                                placeholder="Select Entity"
+                            ></p-treeSelect>
+                        </div>
+                        <div class="field col">
+                            <label for="entity">Roles</label>
+                            <p-multiSelect
+                                [options]="roles"
+                                placeholder="Select a Role"
+                                optionLabel="role"
+                                class="multiselect-custom"
+                                display="chip"
+                            >
+                                <ng-template let-role pTemplate="item">
+                                    <div class="flex align-items-center">
+                                        <span class="ml-2">{{
+                                            role.title
+                                        }}</span>
+                                    </div>
+                                </ng-template>
+                            </p-multiSelect>
+                        </div>
+                        <div class="field col">
+                            <label for="email">Email</label>
+                            <input
+                                type="text"
+                                pInputText
+                                id="email"
+                                formControlName="email"
+                                required
+                                autofocus
+                                [ngClass]="{
+                                    'ng-invalid ng-dirty':
+                                        submitted && !user.email
+                                }"
+                            />
+                            <small
+                                class="ng-dirty ng-invalid"
+                                *ngIf="submitted && !user.email"
+                                >Email is required.</small
+                            >
+                        </div>
+                        <div class="field col-12">
+                            <label for="description">Description</label>
+                            <textarea
+                                id="description"
+                                pInputTextarea
+                                formControlName="description"
+                                required
+                                rows="3"
+                                cols="20"
+                            ></textarea>
+                        </div>
+                    </div>
+
+                    <div class="p-formgrid grid">
+                        <div class="col">
+                            <button
+                                pButton
+                                pRipple
+                                type="submit"
+                                label="Save"
+                                icon="pi pi-plus"
+                                class="p-button-success mr-2"
+                            ></button>
+                        </div>
+                        <div class="col">
+                            <button
+                                pButton
+                                pRipple
+                                label="Cancel"
+                                class="p-button-danger"
+                            ></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

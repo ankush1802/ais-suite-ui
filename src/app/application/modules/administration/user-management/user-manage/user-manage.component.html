@@ -1,4 +1,13 @@
-<div class="grid">
+<div *ngIf="inProgress" class="card flex justify-content-center">
+    <p-progressSpinner
+        styleClass="w-4rem h-4rem"
+        strokeWidth="8"
+        fill="var(--surface-ground)"
+        animationDuration=".5s"
+    ></p-progressSpinner>
+</div>
+
+<div *ngIf="!inProgress" class="grid">
     <div class="col-12">
         <form [formGroup]="userForm" (ngSubmit)="saveUser()">
             <div class="card px-6 py-6">
@@ -11,23 +20,33 @@
                 <div class="card p-fluid">
                     <h5>Manage User</h5>
                     <div class="p-formgrid grid">
-                        <div class="field col">
+                        <div class="field col-4">
                             <label for="entity">Parent Entity</label>
                             <p-treeSelect
                                 containerStyleClass="w-full"
                                 formControlName="entity"
                                 [options]="nodes"
                                 id="entity"
+                                [ngClass]="{
+                                    'ng-invalid ng-dirty':
+                                        submitted && userForm.get('entity')?.errors?.required
+                                }"
                                 (onNodeSelect)="loadRoles()"
                                 placeholder="Select Entity"
                             ></p-treeSelect>
+                            <small
+                                class="ng-dirty ng-invalid p-error block"
+                                *ngIf="submitted && userForm.get('entity')?.errors?.required"
+                                >Entity is required.</small
+                            >
                         </div>
-                        <div class="field col">
+                        <div class="field col-4">
                             <label for="entity">Roles</label>
                             <p-multiSelect
                                 [options]="roles"
+                                formControlName="roles"
                                 placeholder="Select a Role"
-                                optionLabel="role"
+                                optionLabel="title"
                                 class="multiselect-custom"
                                 display="chip"
                             >
@@ -40,7 +59,7 @@
                                 </ng-template>
                             </p-multiSelect>
                         </div>
-                        <div class="field col">
+                        <div class="field col-4">
                             <label for="email">Email</label>
                             <input
                                 type="text"
@@ -55,40 +74,83 @@
                                 }"
                             />
                             <small
-                                class="ng-dirty ng-invalid"
+                                class="ng-dirty ng-invalid p-error block"
                                 *ngIf="submitted && !user.email"
                                 >Email is required.</small
                             >
                         </div>
-                        <div class="field col-12">
+                        <div class="field col-4">
+                            <label for="firstname">First Name</label>
+                            <input
+                                type="text"
+                                pInputText
+                                id="firstname"
+                                formControlName="firstname"
+                                required
+                                [ngClass]="{
+                                    'ng-invalid ng-dirty':
+                                        submitted && !user.firstname
+                                }"
+                            />
+                            <small
+                                class="ng-dirty ng-invalid  p-error block"
+                                *ngIf="submitted && !user.firstname"
+                                >Firstname is required.</small
+                            >
+                        </div>
+                        <div class="field col-4">
+                            <label for="middlename">Middle Name</label>
+                            <input
+                                type="text"
+                                pInputText
+                                id="middlename"
+                                formControlName="middlename"
+                            />
+                        </div>
+                        <div class="field col-4">
+                            <label for="lastname">Last Name</label>
+                            <input
+                                type="text"
+                                pInputText
+                                id="lastname"
+                                formControlName="lastname"
+                            />
+                        </div>
+                        <div class="field col-6">
                             <label for="description">Description</label>
                             <textarea
                                 id="description"
                                 pInputTextarea
                                 formControlName="description"
-                                required
                                 rows="3"
                                 cols="20"
                             ></textarea>
                         </div>
+                        <div class="field col-6">
+                            <label for="active">Active</label><br />
+                            <p-inputSwitch  id="active"
+                            formControlName="active" ></p-inputSwitch>
+                        </div>
                     </div>
-
-                    <div class="p-formgrid grid">
-                        <div class="col">
+                    <div class="p-formgrid grid allign-right">
+                        <div class="col-2">
                             <button
                                 pButton
                                 pRipple
                                 type="submit"
                                 label="Save"
-                                icon="pi pi-plus"
+                                ng-disabled="submitted"
+                                icon="pi pi-save"
                                 class="p-button-success mr-2"
                             ></button>
                         </div>
-                        <div class="col">
+                        <div class="col-2">
                             <button
                                 pButton
+                                (click)="cancel()"
                                 pRipple
                                 label="Cancel"
+                                icon="pi pi-times"
                                 class="p-button-danger"
                             ></button>
                         </div>

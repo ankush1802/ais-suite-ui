@@ -5,6 +5,7 @@ import { ManageEntityComponent } from './entity-manage/entity-manage.component';
 import { MessageService } from 'primeng/api';
 import { ConfirmationDialogComponent } from 'src/app/application/common/confirmation-dialog/confirmation-dialog.component';
 import { SharedModule } from 'src/app/application/common/shared.module';
+import { CommonService } from 'src/app/application/common/shared-services/common.service';
 @NgModule({
     imports: [
         SharedModule
@@ -13,6 +14,7 @@ import { SharedModule } from 'src/app/application/common/shared.module';
      // A list of services this child module shares between components.
      providers: [
         MessageService,
+        CommonService,
         EntityService
     ]
 })

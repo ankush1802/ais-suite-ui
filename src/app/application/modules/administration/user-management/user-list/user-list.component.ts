@@ -3,8 +3,9 @@ import { UserList } from '../user.model';
 import { LazyLoadEvent, MenuItem, MessageService } from 'primeng/api';
 import { UserService } from '../user.service';
 import { Router } from '@angular/router';
-import { MessageResponse } from 'src/app/application/common/shared-models/shared.model';
+import { MessageResponse, NotificationModel } from 'src/app/application/common/shared-models/shared.model';
 import { HttpStatusCode } from '@angular/common/http';
+import { CommonService } from 'src/app/application/common/shared-services/common.service';
 
 @Component({
     templateUrl: './user-list.component.html',
@@ -30,6 +31,7 @@ export class UserListComponent implements OnInit {
     constructor(
         private messageService: MessageService,
         private userProvider: UserService,
+        private commonProvider: CommonService,
         private router: Router
     ) {}
     //#endregion
@@ -107,6 +109,18 @@ export class UserListComponent implements OnInit {
             { field: 'id', header: 'id' },
             { field: 'title', header: 'Title' },
         ];
+    }
+    userServiceNotification(){
+        this.commonProvider.showNotificationObservable.subscribe((response : NotificationModel) => {
+            if (response) {
+                this.messageService.add({
+                    severity: response.type,
+                    summary: response.title,
+                    detail: response.message,
+                    life: 3000,
+                });
+            }
+          });
     }
     //#endregion
 }

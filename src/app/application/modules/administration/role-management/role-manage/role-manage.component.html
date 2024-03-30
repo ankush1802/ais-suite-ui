@@ -1,5 +1,14 @@
-<div class="grid">
+<div *ngIf="inProgress" class="card flex justify-content-center">
+    <p-progressSpinner
+        styleClass="w-4rem h-4rem"
+        strokeWidth="8"
+        fill="var(--surface-ground)"
+        animationDuration=".5s"
+    ></p-progressSpinner>
+</div>
+<div *ngIf="!inProgress" class="grid">
     <div class="col-12">
+        <p-toast></p-toast>
         <form [formGroup]="roleForm" (ngSubmit)="saveRole()">
             <div class="card px-6 py-6">
                 <p-toast></p-toast>
@@ -31,7 +40,8 @@
                                 required
                                 autofocus
                                 [ngClass]="{
-                                    'ng-invalid ng-dirty': submitted && !role.title
+                                    'ng-invalid ng-dirty':
+                                        submitted && !role.title
                                 }"
                             />
                             <small
@@ -55,18 +65,61 @@
                     <h5>Permission(s)</h5>
                     <p-accordion>
                         <div formArrayName="permissiongroups">
-                            <div *ngFor="let groups of permissiongroups().controls; let groupIndex=index">
-                                <p-accordionTab header="{{permissionGroups[groupIndex].grouptitle}}" class="line-height-3 m-0">
+                            <div
+                                *ngFor="
+                                    let groups of permissiongroups().controls;
+                                    let groupIndex = index
+                                "
+                            >
+                                <p-accordionTab
+                                    header="{{
+                                        permissionGroups[groupIndex].grouptitle
+                                    }}"
+                                    class="line-height-3 m-0"
+                                >
                                     <div [formGroupName]="groupIndex">
-                                        <div class="p-formgrid grid" formArrayName="permissions">
+                                        <div
+                                            class="p-formgrid grid"
+                                            formArrayName="permissions"
+                                        >
                                             <div class="field col">
-                                                <label for="active">Select All</label><br />
-                                                <p-inputSwitch id="selectAll-{{groupIndex}}" (onChange)="checkUncheckAll($event,groupIndex)"></p-inputSwitch>
+                                                <label for="active"
+                                                    >Select All</label
+                                                ><br />
+                                                <p-inputSwitch
+                                                    id="selectAll-{{
+                                                        groupIndex
+                                                    }}"
+                                                    (onChange)="
+                                                        checkUncheckAll(
+                                                            $event,
+                                                            groupIndex
+                                                        )
+                                                    "
+                                                ></p-inputSwitch>
                                             </div>
-                                            <div class="field col"  *ngFor="let permission of permissions(groupIndex).controls; let permIndex=index">
-                                                <div [formGroupName]="permIndex">
-                                                    <label for="active">{{permission_control(groupIndex,permIndex).value.permissiontitle}}</label><br />
-                                                    <p-inputSwitch formControlName="permissionvalue"></p-inputSwitch>
+                                            <div
+                                                class="field col"
+                                                *ngFor="
+                                                    let permission of permissions(
+                                                        groupIndex
+                                                    ).controls;
+                                                    let permIndex = index
+                                                "
+                                            >
+                                                <div
+                                                    [formGroupName]="permIndex"
+                                                >
+                                                    <label for="active">{{
+                                                        permission_control(
+                                                            groupIndex,
+                                                            permIndex
+                                                        ).value.permissiontitle
+                                                    }}</label
+                                                    ><br />
+                                                    <p-inputSwitch
+                                                        formControlName="permissionvalue"
+                                                    ></p-inputSwitch>
                                                 </div>
                                             </div>
                                         </div>
@@ -74,36 +127,37 @@
                                 </p-accordionTab>
                             </div>
                         </div>
-                        <ng-container *ngFor="let item of permissionGroups; let i = index">
-
+                        <ng-container
+                            *ngFor="let item of permissionGroups; let i = index"
+                        >
                         </ng-container>
                     </p-accordion>
-                    <div class="p-formgrid grid">
-                        <div class="col">
+                    <div class="p-formgrid grid allign-right">
+                        <div class="col-2">
                             <button
-                            pButton
-                            pRipple
-                            type="submit"
-                            label="Save"
-                            icon="pi pi-plus"
-                            class="p-button-success mr-2"
-                        ></button>
-
+                                pButton
+                                pRipple
+                                type="submit"
+                                label="Save"
+                                ng-disabled="submitted"
+                                icon="pi pi-save"
+                                class="p-button-success mr-2"
+                            ></button>
                         </div>
-                        <div class="col">
+                        <div class="col-2">
                             <button
-                            pButton
-                            pRipple
-                            label="Cancel"
-                            class="p-button-danger"
-                        ></button>
+                                (click)="cancel()"
+                                pButton
+                                type="button"
+                                pRipple
+                                label="Cancel"
+                                icon="pi pi-times"
+                                class="p-button-danger"
+                            ></button>
                         </div>
                     </div>
-
-
                 </div>
             </div>
         </form>
-
     </div>
 </div>

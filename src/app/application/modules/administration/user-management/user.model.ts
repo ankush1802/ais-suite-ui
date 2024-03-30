@@ -4,16 +4,16 @@ export interface UserEntity {
     firstname?: string;
     middlename?: string;
     lastname?: string;
-    entityId : number;
+    entityId: number;
     active?: string;
-    publishby? : string;
-    publishon? : string;
+    description?: string;
+    createdBy?: number;
+    roles?: number[];
 }
-export interface UserList{
-    id? : number;
+export interface UserList {
+    id?: number;
     title?: string;
-    description?:string;
     entity?: string;
-   // permissions?:Permission[];
-    createdBy? : number;
-  }
+    publishby?: string;
+    publishon?: string;
+}

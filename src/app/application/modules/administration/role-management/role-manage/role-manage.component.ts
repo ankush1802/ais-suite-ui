@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 import { Permission, PermissionGroup, Role } from '../role.model';
 import { EntityService } from '../../entity-management/entity.service';
-import { MessageResponse } from 'src/app/application/common/shared-models/shared.model';
+import { MessageResponse, NotificationModel } from 'src/app/application/common/shared-models/shared.model';
 import { HttpStatusCode } from '@angular/common/http';
 import { RoleService } from '../role.service';
+
 import {
     FormArray,
     FormBuilder,
@@ -12,7 +13,10 @@ import {
     FormGroup,
     Validators,
 } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { lastValueFrom } from 'rxjs';
+import { GlobalTreeSearch } from 'src/app/application/common/app-util';
+import { CommonService } from 'src/app/application/common/shared-services/common.service';
 
 @Component({
     selector: 'app-manage-role',
@@ -20,6 +24,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class ManageRoleComponent implements OnInit {
     //#region Variables
+    inProgress: boolean = false;
     breadcrumbItems: MenuItem[] = [];
     home: MenuItem | undefined;
     nodes!: any[];
@@ -67,8 +72,10 @@ export class ManageRoleComponent implements OnInit {
             this.role.permissions &&
             this.role.permissions.length > 0
         ) {
-            const permissionIndex = this.role.permissions.findIndex(f=>f.permissionid === permission.permissionid);
-            if(permissionIndex > -1){
+            const permissionIndex = this.role.permissions.findIndex(
+                (f) => f.permissionid === permission.permissionid
+            );
+            if (permissionIndex > -1) {
                 permssionValue = true;
             }
         }
@@ -95,15 +102,19 @@ export class ManageRoleComponent implements OnInit {
         private roleProvider: RoleService,
         private messageService: MessageService,
         private fb: FormBuilder,
-        private activatedRoute: ActivatedRoute
+        private activatedRoute: ActivatedRoute,
+        private router: Router,
+        private commonProvider:  CommonService
     ) {
         this.buildRoleFormGroup();
     }
     async ngOnInit(): Promise<void> {
+        this.inProgress = true;
         await this.checkRoleDetails();
         this.pageSetting();
-        await this.getEntityTree();
-        await this.getPermissions();
+        this.getEntityTree();
+        this.getPermissions();
+        this.inProgress = false;
     }
     //#endregion
 
@@ -125,28 +136,32 @@ export class ManageRoleComponent implements OnInit {
         );
         if (this.role.id && this.role.id > 0) {
             //retrieve role details first
-            this.roleProvider
-                .getRoleById({ id: this.role.id })
-                .subscribe((response: MessageResponse) => {
-                    if (response.statusCode === HttpStatusCode.Ok) {
-                        this.role = response.result.role;
-                        this.roleForm.patchValue({
-                            title: this.role.title,
-                            description: this.role.description,
-                        });
-                    } else {
-                        this.messageService.add({
-                            severity: 'error',
-                            summary: 'Error',
-                            detail: response.errorMessage,
-                            life: 3000,
-                        });
-                    }
+            const roleDetailsReq = this.roleProvider.getRoleById({
+                id: this.role.id,
+            });
+            const response = (await lastValueFrom(
+                roleDetailsReq
+            )) as MessageResponse;
+
+            if (response.statusCode === HttpStatusCode.Ok) {
+                this.role = response.result.role;
+                this.roleForm.patchValue({
+                    title: this.role.title,
+                    description: this.role.description,
                 });
+            } else {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: response.errorMessage,
+                    life: 3000,
+                });
+            }
         }
     }
-    async getEntityTree() {
-        await this.entityProvider
+
+    getEntityTree() {
+        this.entityProvider
             .getEntityTree({ id: 0 })
             .subscribe((response: MessageResponse) => {
                 if (response.statusCode === HttpStatusCode.Ok) {
@@ -156,10 +171,11 @@ export class ManageRoleComponent implements OnInit {
                         this.role.entityId &&
                         this.role.entityId > 0
                     ) {
-                        const selectedEntity = this.nodes.filter(
-                            (f) => f.key == this.role.entityId
+                        const selectedEntity = GlobalTreeSearch(
+                            this.nodes,
+                            this.role.entityId
                         );
-                        this.roleForm.patchValue({ entity: selectedEntity[0] });
+                        this.roleForm.patchValue({ entity: selectedEntity });
                     }
                 } else {
                     this.messageService.add({
@@ -172,7 +188,7 @@ export class ManageRoleComponent implements OnInit {
             });
     }
     async getPermissions() {
-        await this.roleProvider
+        this.roleProvider
             .getAllPermissions()
             .subscribe((response: MessageResponse) => {
                 if (response.statusCode === HttpStatusCode.Ok) {
@@ -215,7 +231,7 @@ export class ManageRoleComponent implements OnInit {
             if (formValue.title.trim().length > 0) {
                 let roleRequest = {} as Role;
                 roleRequest.createdBy = 1;
-                if(this.role && this.role.id >0){
+                if (this.role && this.role.id > 0) {
                     roleRequest.id = this.role.id;
                 }
                 roleRequest.description = formValue.description;
@@ -235,11 +251,13 @@ export class ManageRoleComponent implements OnInit {
                         );
                     }
                 });
+                this.inProgress = true;
                 this.roleProvider
                     .saveRole(roleRequest)
                     .subscribe((response: MessageResponse) => {
+                        this.inProgress = false;
                         if (response.statusCode === HttpStatusCode.Ok) {
-                            if(roleRequest.id < 1){
+                            if (roleRequest.id < 1) {
                                 this.roleForm.reset();
                             }
                             this.messageService.add({
@@ -248,6 +266,7 @@ export class ManageRoleComponent implements OnInit {
                                 detail: 'Role Saved Successfully.',
                                 life: 3000,
                             });
+                            //setTimeout(this.cancel,4000);
                         } else {
                             this.messageService.add({
                                 severity: 'error',
@@ -276,6 +295,9 @@ export class ManageRoleComponent implements OnInit {
 
         //check entity is selected or not
         //check form is valid or not
+    }
+    cancel() {
+        this.router.navigateByUrl('/administration/roles');
     }
     //#endregion
 }

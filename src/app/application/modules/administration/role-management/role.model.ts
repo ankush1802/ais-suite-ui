@@ -10,6 +10,7 @@ export interface Role{
   export interface RolesList {
     id?: number;
     title?: string;
+    entity?: string;
     publishby? : string;
     publishon? : string;
 }

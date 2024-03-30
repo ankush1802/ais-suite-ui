@@ -9,6 +9,7 @@ import { Role } from './role.model';
 
 @Injectable()
 export class RoleService {
+
     constructor(protected http: HttpClient) {}
     public getAllRoles(request: any) {
         return this.http.post<MessageResponse>(

@@ -4,6 +4,7 @@ import { SharedModule } from 'src/app/application/common/shared.module';
 import { UserListComponent } from './user-list/user-list.component';
 import { ManageUserComponent } from './user-manage/user-manage.component';
 import { UserService } from './user.service';
+import { CommonService } from 'src/app/application/common/shared-services/common.service';
 @NgModule({
     imports: [
         SharedModule
@@ -12,6 +13,7 @@ import { UserService } from './user.service';
      // A list of services this child module shares between components.
      providers: [
         MessageService,
+        CommonService,
         UserService
     ]
 })

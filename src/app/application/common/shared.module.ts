@@ -19,6 +19,7 @@ import { TreeSelectModule } from 'primeng/treeselect';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { AccordionModule } from 'primeng/accordion';
 import { MultiSelectModule } from "primeng/multiselect";
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 
 @NgModule({
@@ -44,6 +45,7 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
         BreadcrumbModule,
         AccordionModule,
         MultiSelectModule,
+        ProgressSpinnerModule
     ],
     exports:[
         CommonModule,
@@ -67,6 +69,7 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
         MultiSelectModule,
         BreadcrumbModule,
         AccordionModule,
+        ProgressSpinnerModule,
         ConfirmationDialogComponent
     ],
     declarations: [ConfirmationDialogComponent],

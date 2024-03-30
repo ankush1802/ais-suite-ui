@@ -1,0 +1,25 @@
+.layout-topbar-actions > ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    min-width: 150px;
+    animation-duration: 0.2s;
+}
+.layout-topbar-actions > ul > li {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    cursor: pointer;
+}
+.layout-topbar-actions > ul > li > a {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    width: 100%;
+}
+.layout-topbar-actions  > ul > li > a > i {
+    font-size: 16px;
+    margin-right: 10px;
+}

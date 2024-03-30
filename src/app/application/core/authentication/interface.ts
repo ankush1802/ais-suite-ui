@@ -1,8 +1,9 @@
 export interface User {
   [prop: string]: any;
 
-  id?: number | string | null;
+  id?: number;
   name?: string;
+  username?:string;
   email?: string;
   avatar?: string;
   roles?: any[];

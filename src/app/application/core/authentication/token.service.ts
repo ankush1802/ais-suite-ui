@@ -11,7 +11,7 @@ import { LocalStorageService } from '../../common/shared-services/storage.servic
   providedIn: 'root',
 })
 export class TokenService implements OnDestroy {
-  private key = 'ng-matero-token';
+  private key = 'ais-suite-token';
 
   private change$ = new BehaviorSubject<BaseToken | undefined>(undefined);
   private refresh$ = new Subject<BaseToken | undefined>();
@@ -70,7 +70,6 @@ export class TokenService implements OnDestroy {
 
   private save(token?: Token): void {
     this._token = undefined;
-
     if (!token) {
       this.store.remove(this.key);
     } else {

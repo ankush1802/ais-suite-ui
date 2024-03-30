@@ -88,7 +88,6 @@ export class EntityListComponent implements OnInit {
         this.buildAndQuery();
     }
     pageChange(event: any) {
-        debugger;
         this.pageIndex = event.first + 1;
         this.pageSize = event.rows;
     }
@@ -128,7 +127,6 @@ export class EntityListComponent implements OnInit {
             this.entityProvider
                 .deleteEntities({ ids: entitiesIds })
                 .subscribe((response: MessageResponse) => {
-                    debugger;
                     if (response.statusCode === HttpStatusCode.Ok) {
                         this.messageService.add({
                             severity: 'success',

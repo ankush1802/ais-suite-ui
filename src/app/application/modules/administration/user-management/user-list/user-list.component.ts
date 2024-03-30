@@ -91,7 +91,6 @@ export class UserListComponent implements OnInit {
         this.buildAndQuery();
     }
     pageChange(event: any) {
-        debugger;
         this.pageIndex = event.first + 1;
         this.pageSize = event.rows;
     }

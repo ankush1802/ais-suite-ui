@@ -20,6 +20,7 @@ export interface Entity{
   email3?:string;
   website?:string;
   active?:boolean;
+  createdBy?: number;
 }
 export interface IManageEntityDialogData {
   service: EntityService;

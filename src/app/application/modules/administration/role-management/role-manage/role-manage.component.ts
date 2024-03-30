@@ -17,6 +17,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
 import { GlobalTreeSearch } from 'src/app/application/common/app-util';
 import { CommonService } from 'src/app/application/common/shared-services/common.service';
+import { AuthService, User } from 'src/app/application/core/authentication';
 
 @Component({
     selector: 'app-manage-role',
@@ -24,6 +25,7 @@ import { CommonService } from 'src/app/application/common/shared-services/common
 })
 export class ManageRoleComponent implements OnInit {
     //#region Variables
+    user!: User;
     inProgress: boolean = false;
     breadcrumbItems: MenuItem[] = [];
     home: MenuItem | undefined;
@@ -104,11 +106,13 @@ export class ManageRoleComponent implements OnInit {
         private fb: FormBuilder,
         private activatedRoute: ActivatedRoute,
         private router: Router,
-        private commonProvider:  CommonService
+        private commonProvider:  CommonService,
+        private auth: AuthService
     ) {
         this.buildRoleFormGroup();
     }
     async ngOnInit(): Promise<void> {
+        this.user = this.auth.getUser();
         this.inProgress = true;
         await this.checkRoleDetails();
         this.pageSetting();
@@ -230,7 +234,7 @@ export class ManageRoleComponent implements OnInit {
         if (formValue.entity) {
             if (formValue.title.trim().length > 0) {
                 let roleRequest = {} as Role;
-                roleRequest.createdBy = 1;
+                roleRequest.createdBy = this.user.id;
                 if (this.role && this.role.id > 0) {
                     roleRequest.id = this.role.id;
                 }

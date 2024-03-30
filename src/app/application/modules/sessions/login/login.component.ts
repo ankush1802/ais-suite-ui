@@ -43,7 +43,7 @@ export class LoginComponent {
             .pipe(filter((authenticated) => authenticated))
             .subscribe({
                 next: () => {
-                    this.router.navigateByUrl('/');
+                    this.router.navigateByUrl('/ais-suite');
                 },
                 error: (errorRes: HttpErrorResponse) => {
                     if (errorRes.status === 422) {

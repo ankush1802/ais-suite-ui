@@ -17,6 +17,7 @@ import { AppFooterComponent } from './app.footer.component';
 import { AppConfigModule } from './config/config.module';
 import { AppSidebarComponent } from "./app.sidebar.component";
 import { AppLayoutComponent } from "./app.layout.component";
+import { MenubarModule } from 'primeng/menubar';
 
 @NgModule({
     declarations: [
@@ -37,6 +38,7 @@ import { AppLayoutComponent } from "./app.layout.component";
         BadgeModule,
         RadioButtonModule,
         InputSwitchModule,
+        MenubarModule,
         RippleModule,
         RouterModule,
         AppConfigModule

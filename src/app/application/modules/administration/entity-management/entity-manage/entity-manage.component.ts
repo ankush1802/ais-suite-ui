@@ -11,12 +11,14 @@ import { Entity } from '../entity.model';
 import { MessageService } from 'primeng/api';
 import { MessageResponse } from 'src/app/application/common/shared-models/shared.model';
 import { HttpStatusCode } from '@angular/common/http';
+import { AuthService, User } from 'src/app/application/core/authentication';
 
 @Component({
     selector: 'app-manage-entity',
     templateUrl: './entity-manage.component.html',
 })
 export class ManageEntityComponent implements OnInit {
+    user!: User;
     @Input() showEntityManageDialog: boolean;
     @Output() closeEntityManageDialogEvent = new EventEmitter<boolean>();
     @Output() refreshEntityGridDialogEvent = new EventEmitter<boolean>();
@@ -27,14 +29,16 @@ export class ManageEntityComponent implements OnInit {
 
     constructor(
         private entityProvider: EntityService,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private auth: AuthService
     ) {
 
     }
-    ngOnInit(): void {}
+    ngOnInit(): void {
+        this.user = this.auth.getUser();
+    }
     ngOnChanges(changes: any) {
         // changes.prop contains the old and the new value...
-        debugger;
         // const showEntityManageDialogValueChange = changes.showEntityManageDialog as any;
         // if(showEntityManageDialogValueChange && showEntityManageDialogValueChange.currentValue){
 
@@ -74,12 +78,12 @@ export class ManageEntityComponent implements OnInit {
 
     saveEntity() {
         this.submitted = true;
+        this.entity.createdBy = this.user.id;
         if (this.entity.title?.trim() && this.selectedNodes) {
             this.entity.parent_id = this.selectedNodes.key;
             this.entityProvider
                 .saveEntity(this.entity)
                 .subscribe((response: MessageResponse) => {
-                    debugger;
                     this.submitted = false;
                     if (response.statusCode === HttpStatusCode.Ok) {
                         if (this.entity.id) {

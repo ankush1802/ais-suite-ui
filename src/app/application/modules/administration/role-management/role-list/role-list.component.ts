@@ -83,7 +83,6 @@ export class RoleListComponent implements OnInit {
         this.buildAndQuery();
     }
     pageChange(event: any) {
-        debugger;
         this.pageIndex = event.first + 1;
         this.pageSize = event.rows;
     }
@@ -124,7 +123,6 @@ export class RoleListComponent implements OnInit {
             this.roleProvider
                 .deleteRoles({ ids: rolesIds, createdBy: this.userId })
                 .subscribe((response: MessageResponse) => {
-                    debugger;
                     if (response.statusCode === HttpStatusCode.Ok) {
                         this.messageService.add({
                             severity: 'success',
@@ -146,7 +144,6 @@ export class RoleListComponent implements OnInit {
     }
     roleServiceNotification(){
         this.commonProvider.showNotificationObservable.subscribe((response : NotificationModel) => {
-            debugger;
             if (response) {
                 this.messageService.add({
                     severity: response.type,

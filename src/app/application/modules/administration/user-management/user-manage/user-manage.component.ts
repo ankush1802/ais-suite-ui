@@ -10,6 +10,7 @@ import { UserEntity } from '../user.model';
 import { UserService } from '../user.service';
 import { GlobalTreeSearch } from 'src/app/application/common/app-util';
 import { lastValueFrom } from 'rxjs';
+import { AuthService, User } from 'src/app/application/core/authentication';
 
 @Component({
     selector: 'app-manage-role',
@@ -17,8 +18,9 @@ import { lastValueFrom } from 'rxjs';
 })
 export class ManageUserComponent implements OnInit {
     //#region Variables
+    loggedInUser!: User;
     inProgress: boolean = false;
-    loggedInUserId: number = 1;
+    loggedInUserId: number = 0;
     breadcrumbItems: MenuItem[] = [];
     home: MenuItem | undefined;
     nodes!: any[];
@@ -36,11 +38,14 @@ export class ManageUserComponent implements OnInit {
         private messageService: MessageService,
         private fb: FormBuilder,
         private activatedRoute: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private auth: AuthService
     ) {
         this.buildUserFormGroup();
     }
     async ngOnInit(): Promise<void> {
+        this.loggedInUser = this.auth.getUser();
+        this.loggedInUserId = this.loggedInUser.id;
         this.inProgress = true;
         await this.checkUserDetails();
         this.pageSetting();
@@ -169,7 +174,6 @@ export class ManageUserComponent implements OnInit {
         }
     }
    async saveUser() {
-        debugger;
         this.submitted = true;
         if (this.userForm.valid) {
             const formValue = this.userForm.value;

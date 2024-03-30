@@ -16,11 +16,13 @@ export class LoginService {
   }
 
   refresh(params: Record<string, any>) {
-    return this.http.post<Token>('/auth/refresh', params);
+    return this.http.post<Token>(`${ApiBaseUrls.authbaseUrl}${AuthModouleApiEndpoints.RefreshToken}`, params);
+   // return this.http.post<Token>('/auth/refresh', params);
   }
 
   logout() {
-    return this.http.post<any>('/auth/logout', {});
+    return this.http.post<Token>(`${ApiBaseUrls.authbaseUrl}${AuthModouleApiEndpoints.Logout}`, {});
+    //return this.http.post<any>('/auth/logout', {});
   }
 
   me() {

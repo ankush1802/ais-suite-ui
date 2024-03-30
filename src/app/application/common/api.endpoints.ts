@@ -1,6 +1,6 @@
 
 export enum ApiBaseUrls {
-    authbaseUrl = 'https://localhost:8000/',
+    authbaseUrl = 'https://localhost:7200/',
     entitybaseUrl = 'https://localhost:7185/',
     rolebaseUrl = 'https://localhost:7216/',
     userbaseUrl = 'https://localhost:7186/',
@@ -8,6 +8,9 @@ export enum ApiBaseUrls {
 
   export enum AuthModouleApiEndpoints {
     Auth = 'api/Auth/ValidateUser',
+    RefreshToken = 'api/Auth/RefreshToken',
+    GetUserInformation = 'api/Auth/GetUserInformation',
+    Logout = 'api/Auth/Logout',
   }
 
   export enum EntityModouleApiEndpoints {

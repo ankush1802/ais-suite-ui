@@ -44,12 +44,7 @@ export class AppTopBarComponent {
                         },
                     },
                 ],
-            },
-            { separator: true },
-            {
-                label: 'Quit',
-                icon: 'pi pi-fw pi-sign-out',
-            },
+            }
         ];
     }
     logout() {

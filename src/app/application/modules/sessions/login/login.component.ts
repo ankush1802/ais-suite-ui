@@ -46,8 +46,8 @@ export class LoginComponent {
                     this.router.navigateByUrl('/ais-suite');
                 },
                 error: (errorRes: HttpErrorResponse) => {
-                    if (errorRes.status === 422) {
-
+                    if (errorRes.status === 401) {
+                        alert("Invalid Credentials!!");
 
                     }
                     this.isSubmitting = false;

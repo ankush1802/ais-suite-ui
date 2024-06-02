@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MessageResponse } from 'src/app/application/common/shared-models/shared.model';
 import { HttpStatusCode } from '@angular/common/http';
-import { UserEntity } from '../user.model';
+import { UserEntity, UserList } from '../user.model';
 import { UserService } from '../user.service';
 import { GlobalTreeSearch } from 'src/app/application/common/app-util';
 import { lastValueFrom } from 'rxjs';
@@ -24,7 +24,6 @@ export class ManageUserComponent implements OnInit {
     breadcrumbItems: MenuItem[] = [];
     home: MenuItem | undefined;
     nodes!: any[];
-    selectedNodes: any;
     submitted: boolean = false;
     user: UserEntity = {} as UserEntity;
     // permissionGroups: PermissionGroup[];
@@ -47,9 +46,13 @@ export class ManageUserComponent implements OnInit {
         this.loggedInUser = this.auth.getUser();
         this.loggedInUserId = this.loggedInUser.id;
         this.inProgress = true;
-        await this.checkUserDetails();
+        const $this = this;
+        await this.checkUserDetails($this);
         this.pageSetting();
-        await this.getEntityTree();
+        await this.getEntityTree($this);
+        if (this.user.id > 0) {
+            await this.loadRoles($this);
+        }
         this.inProgress = false;
     }
     //#endregion
@@ -57,7 +60,7 @@ export class ManageUserComponent implements OnInit {
     pageSetting() {
         this.breadcrumbItems = [
             { label: 'Administration' },
-            { label: 'User(s)', routerLink: '/administration/users' },
+            { label: 'User(s)', routerLink: '/ais-suite/administration/users' },
             { label: 'Manage User' },
         ];
         this.home = { icon: 'pi pi-home', routerLink: '/' };
@@ -81,31 +84,37 @@ export class ManageUserComponent implements OnInit {
     //#endregion
 
     //#region Helper Method(s)
-    async checkUserDetails() {
-        this.activatedRoute.params.subscribe(
-            (params: any) => (this.user.id = params.id)
+    async checkUserDetails(this_object: any) {
+        let $this = this;
+        if (this_object) {
+            $this = this_object;
+        }
+        $this.activatedRoute.params.subscribe(
+            (params: any) => ($this.user.id = params.id)
         );
-        if (this.user.id && this.user.id > 0) {
+        if ($this.user.id && $this.user.id > 0) {
             //retrieve role details first
-            const userDetailReq = this.userProvider.getUserById({
-                id: this.user.id,
+            const userDetailReq = $this.userProvider.getUserById({
+                id: $this.user.id,
             });
-
             const response = (await lastValueFrom(
                 userDetailReq
             )) as MessageResponse;
             if (response.statusCode === HttpStatusCode.Ok) {
-                this.user = response.result.role;
-                this.userForm.patchValue({
-                    email: this.user.email,
-                    firstname: this.user.firstname,
-                    middlename: this.user.middlename,
-                    lastname: this.user.lastname,
-                    active: this.user.active,
-                    description: this.user.description,
+                $this.user = {} as UserEntity;
+                $this.user = response.result.user as UserEntity;
+                $this.userForm.patchValue({
+                    email: $this.user.email,
+                    firstname: $this.user.firstname,
+                    middlename: $this.user.middlename,
+                    lastname: $this.user.lastname,
+                    active: $this.user.active,
+                    description: $this.user.description,
+                    entity: null,
+                    roles: [],
                 });
             } else {
-                this.messageService.add({
+                $this.messageService.add({
                     severity: 'error',
                     summary: 'Error',
                     detail: response.errorMessage,
@@ -114,25 +123,31 @@ export class ManageUserComponent implements OnInit {
             }
         }
     }
-    async getEntityTree(): Promise<void> {
-        const entityReq = this.entityProvider.getEntityTree({ id: 0 });
+    async getEntityTree(this_object: any) {
+        let $this = this;
+        if (this_object) {
+            $this = this_object;
+        }
+        const entityReq = $this.entityProvider.getEntityTree({ id: 0 });
         const response = (await lastValueFrom(entityReq)) as MessageResponse;
+
         if (response.statusCode === HttpStatusCode.Ok) {
             this.nodes = response.result;
             if (
-                this.user.id > 0 &&
-                this.user.entityId &&
-                this.user.entityId > 0
+                $this.user.id > 0 &&
+                $this.user.entityId &&
+                $this.user.entityId > 0
             ) {
                 const selectedEntity = GlobalTreeSearch(
                     this.nodes,
                     this.user.entityId
                 );
-                this.userForm.patchValue({ entity: selectedEntity[0] });
-                await this.loadRoles();
+                if (selectedEntity) {
+                    $this.userForm.patchValue({ entity: selectedEntity });
+                }
             }
         } else {
-            this.messageService.add({
+            $this.messageService.add({
                 severity: 'error',
                 summary: 'Error',
                 detail: response.errorMessage,
@@ -141,31 +156,39 @@ export class ManageUserComponent implements OnInit {
         }
     }
     roles: any[] = [];
-    async loadRoles() {
-        const formValue = this.userForm.value;
+    async loadRoles(this_object: any) {
+        let $this = this;
+        if (this_object) {
+            $this = this_object;
+        }
+        const formValue = $this.userForm.value;
         const entityId = formValue.entity.key;
-        const roleReq = this.roleProvider.getAllRolesByEntity({ id: entityId });
+        const roleReq = $this.roleProvider.getAllRolesByEntity({
+            id: entityId,
+        });
         const response = (await lastValueFrom(roleReq)) as MessageResponse;
         if (response.statusCode === HttpStatusCode.Ok) {
-            this.roles = response.result;
+            $this.roles = response.result;
             if (
-                this.user.id > 0 &&
-                this.user.roles &&
-                this.user.roles.length > 0
+                $this.user.id > 0 &&
+                $this.user.roles &&
+                $this.user.roles.length > 0
             ) {
                 let selectedRoles = [];
-                for(let i = 0;i < this.user.roles.length;i++){
-                    const roleIndex = this.roles.findIndex(s=>s.id == this.user.roles[i]);
-                    if(roleIndex > - 1){
-                        selectedRoles.push(this.roles[roleIndex]);
+                for (let i = 0; i < $this.user.roles.length; i++) {
+                    const roleIndex = $this.roles.findIndex(
+                        (s) => s.id == $this.user.roles[i]
+                    );
+                    if (roleIndex > -1) {
+                        selectedRoles.push($this.roles[roleIndex]);
                     }
                 }
-                if(selectedRoles.length > 0){
-                    this.userForm.patchValue({ roles: selectedRoles });
-                }
+                $this.userForm.patchValue({
+                    roles: selectedRoles,
+                });
             }
         } else {
-            this.messageService.add({
+            $this.messageService.add({
                 severity: 'error',
                 summary: 'Error',
                 detail: response.errorMessage,
@@ -173,39 +196,70 @@ export class ManageUserComponent implements OnInit {
             });
         }
     }
-   async saveUser() {
+    async saveUser() {
         this.submitted = true;
         if (this.userForm.valid) {
             const formValue = this.userForm.value;
-            const userReuest = {} as UserEntity;
-            userReuest.active = formValue.active;
-            userReuest.email = formValue.email;
-            userReuest.firstname = formValue.email;
-            userReuest.lastname = formValue.email;
-            userReuest.middlename = formValue.email;
-            userReuest.entityId = formValue.entity.key;
-            userReuest.description = formValue.description;
-            userReuest.createdBy = this.loggedInUserId;
+            const userRequest = {} as UserEntity;
+            if (this.user.id > 0) {
+                userRequest.id = this.user.id;
+            }
+            userRequest.active = formValue.active == '' ? false : formValue.active;
+            userRequest.email = formValue.email;
+            userRequest.firstname = formValue.firstname;
+            userRequest.lastname = formValue.lastname;
+            userRequest.middlename = formValue.middlename;
+            userRequest.entityId = formValue.entity.key;
+            userRequest.description = formValue.description;
+            userRequest.createdBy = this.loggedInUserId;
             let selectedRoles = [] as number[];
-            if(formValue.roles && Array.isArray(formValue.roles)){
-                for(let i = 0;i < formValue.roles.length;i++){
+            if (formValue.roles && Array.isArray(formValue.roles)) {
+                for (let i = 0; i < formValue.roles.length; i++) {
                     selectedRoles.push(formValue.roles[i].id);
                 }
             }
-            userReuest.roles = selectedRoles;
-            const manageUserReq = this.userProvider.saveUser(userReuest);
-            const response = (await lastValueFrom(manageUserReq)) as MessageResponse;
-            if (response.statusCode === HttpStatusCode.Ok) {
-
-            }
-            else {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: response.errorMessage,
-                    life: 3000,
+            userRequest.roles = selectedRoles;
+            const manageUserReq = this.userProvider
+                .saveUser(userRequest)
+                .subscribe((response: MessageResponse) => {
+                    this.inProgress = false;
+                    this.submitted = false;
+                    if (response.statusCode === HttpStatusCode.Ok) {
+                        if (
+                            userRequest.id < 1 ||
+                            userRequest.id == undefined ||
+                            userRequest.id == null
+                        ) {
+                            this.userForm.reset();
+                        }
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Successful',
+                            detail: 'User Saved Successfully.',
+                            life: 3000,
+                        });
+                        //TODO: Make readable form
+                    } else {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: response.errorMessage,
+                            life: 3000,
+                        });
+                    }
                 });
-            }
+            // const response = (await lastValueFrom(manageUserReq)) as MessageResponse;
+            // if (response.statusCode === HttpStatusCode.Ok) {
+
+            // }
+            // else {
+            //     this.messageService.add({
+            //         severity: 'error',
+            //         summary: 'Error',
+            //         detail: response.errorMessage,
+            //         life: 3000,
+            //     });
+            // }
         } else {
             this.messageService.add({
                 severity: 'error',
@@ -216,7 +270,7 @@ export class ManageUserComponent implements OnInit {
         }
     }
     cancel() {
-        this.router.navigateByUrl('/administration/users');
+        this.router.navigateByUrl('/ais-suite/administration/users');
     }
     //#endregion
 }

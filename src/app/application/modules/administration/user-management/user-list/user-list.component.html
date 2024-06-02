@@ -31,10 +31,12 @@
 
                 <ng-template pTemplate="right">
                     <p-fileUpload
+                        #csvUserFileUpload
                         mode="basic"
-                        accept="image/*"
+                        accept=".csv"
                         [maxFileSize]="1000000"
                         label="Import"
+                        (onSelect)="importDataFromCSV($event)"
                         chooseLabel="Import"
                         class="mr-2 inline-block"
                     ></p-fileUpload>
@@ -50,7 +52,6 @@
             </p-toolbar>
 
             <p-table
-                #dt
                 [value]="allUsers"
                 [lazy]="true"
                 (onLazyLoad)="loadUsers($event)"
@@ -98,21 +99,28 @@
                         <th pSortableColumn="title">
                             Name <p-sortIcon field="title"></p-sortIcon>
                         </th>
+                        <th pSortableColumn="entity">
+                            Entity <p-sortIcon field="entity"></p-sortIcon>
+                        </th>
                         <th>Action(s)</th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-role>
+                <ng-template pTemplate="body" let-user>
                     <tr>
                         <td>
-                            <p-tableCheckbox [value]="role"></p-tableCheckbox>
+                            <p-tableCheckbox [value]="user"></p-tableCheckbox>
                         </td>
                         <td style="width: auto; min-width: 10rem">
                             <span class="p-column-title">No.</span>
-                            {{ role.id }}
+                            {{ user.id }}
                         </td>
                         <td style="width: auto; min-width: 10rem">
                             <span class="p-column-title">Name</span>
-                            {{ role.title }}
+                            {{ user.title }}
+                        </td>
+                        <td style="width: auto; min-width: 10rem">
+                            <span class="p-column-title">Name</span>
+                            {{ user.entity }}
                         </td>
                         <td>
                             <div class="flex">
@@ -121,14 +129,14 @@
                                     pRipple
                                     icon="pi pi-pencil"
                                     class="p-button-rounded p-button-success mr-2"
-                                    (click)="editRole(role)"
+                                    (click)="editUser(user)"
                                 ></button>
                                 <button
                                     pButton
                                     pRipple
                                     icon="pi pi-trash"
                                     class="p-button-rounded p-button-warning"
-                                    (click)="deleteRole(role)"
+                                    (click)="deleteRole(user)"
                                 ></button>
                             </div>
                         </td>

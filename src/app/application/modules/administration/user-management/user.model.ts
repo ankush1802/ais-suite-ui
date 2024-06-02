@@ -5,7 +5,7 @@ export interface UserEntity {
     middlename?: string;
     lastname?: string;
     entityId: number;
-    active?: string;
+    active?: boolean;
     description?: string;
     createdBy?: number;
     roles?: number[];

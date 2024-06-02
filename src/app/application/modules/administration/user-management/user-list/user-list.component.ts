@@ -1,11 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { UserList } from '../user.model';
 import { LazyLoadEvent, MenuItem, MessageService } from 'primeng/api';
 import { UserService } from '../user.service';
 import { Router } from '@angular/router';
-import { MessageResponse, NotificationModel } from 'src/app/application/common/shared-models/shared.model';
+import {
+    MessageResponse,
+    NotificationModel,
+} from 'src/app/application/common/shared-models/shared.model';
 import { HttpStatusCode } from '@angular/common/http';
 import { CommonService } from 'src/app/application/common/shared-services/common.service';
+import { CsvService } from 'src/app/application/common/shared-services/csv.services';
+import { FileUpload } from 'primeng/fileupload';
 
 @Component({
     templateUrl: './user-list.component.html',
@@ -32,7 +37,8 @@ export class UserListComponent implements OnInit {
         private messageService: MessageService,
         private userProvider: UserService,
         private commonProvider: CommonService,
-        private router: Router
+        private router: Router,
+        private _csvService: CsvService
     ) {}
     //#endregion
 
@@ -40,7 +46,7 @@ export class UserListComponent implements OnInit {
     pageSetting() {
         this.breadcrumbItems = [
             { label: 'Administration' },
-            { label: 'User(s)', routerLink: '/administration/users' },
+            { label: 'User(s)', routerLink: '/ais-suite/administration/users' },
         ];
         this.home = { icon: 'pi pi-home', routerLink: '/' };
     }
@@ -91,14 +97,19 @@ export class UserListComponent implements OnInit {
         this.buildAndQuery();
     }
     pageChange(event: any) {
-        this.pageIndex = event.first + 1;
+        this.pageIndex = event.first / event.rows + 1;
         this.pageSize = event.rows;
     }
     //#endregion
 
     //#region User Crud
     openNew() {
-        this.router.navigateByUrl('/administration/manage-user');
+        this.router.navigateByUrl('/ais-suite/administration/manage-user');
+    }
+    editUser(user: UserList) {
+        this.router.navigateByUrl(
+            `/ais-suite/administration/manage-user/${user.id}`
+        );
     }
     //#endregion
 
@@ -109,17 +120,35 @@ export class UserListComponent implements OnInit {
             { field: 'title', header: 'Title' },
         ];
     }
-    userServiceNotification(){
-        this.commonProvider.showNotificationObservable.subscribe((response : NotificationModel) => {
-            if (response) {
-                this.messageService.add({
-                    severity: response.type,
-                    summary: response.title,
-                    detail: response.message,
-                    life: 3000,
-                });
+    userServiceNotification() {
+        this.commonProvider.showNotificationObservable.subscribe(
+            (response: NotificationModel) => {
+                if (response) {
+                    this.messageService.add({
+                        severity: response.type,
+                        summary: response.title,
+                        detail: response.message,
+                        life: 3000,
+                    });
+                }
             }
-          });
+        );
     }
     //#endregion
+    @ViewChild('csvUserFileUpload') csvUserFileUploadControl: FileUpload;
+    public importedData: Array<any> = [];
+    public importDataFromCSV(event: any) {
+        this.getTextFromFile(event).then((fileContent)=>{
+            this.importedData = this._csvService.importDataFromCSV(fileContent);
+            console.log(this.importedData);
+            debugger;
+            this.csvUserFileUploadControl.clear();
+        });
+
+    }
+    private async getTextFromFile(event: any) {
+        const file: File = event.files[0];
+        let fileContent = await file.text();
+        return fileContent;
+    }
 }

@@ -21,6 +21,12 @@ export class AppMenuComponent implements OnInit {
                 ]
             },
             {
+                label: 'Examination',
+                items: [
+                    { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/ais-suite/examination/'] },
+                ]
+            },
+            {
                 label: 'Administration',
                 items: [
                     { label: 'Entities', icon: 'pi pi-fw pi-building', routerLink: ['/ais-suite/administration/'] },

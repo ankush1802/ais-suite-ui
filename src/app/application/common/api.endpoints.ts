@@ -1,9 +1,9 @@
 
 export enum ApiBaseUrls {
-    authbaseUrl = 'https://localhost:7200/',
-    entitybaseUrl = 'https://localhost:7185/',
-    rolebaseUrl = 'https://localhost:7216/',
-    userbaseUrl = 'https://localhost:7186/',
+    authbaseUrl = 'http://localhost/auth-management/',
+    entitybaseUrl = 'http://localhost/entity-management/',
+    rolebaseUrl = 'http://localhost/role-management/',
+    userbaseUrl = 'http://localhost/user-management/',
   }
 
   export enum AuthModouleApiEndpoints {

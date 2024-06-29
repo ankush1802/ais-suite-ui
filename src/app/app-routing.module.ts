@@ -21,7 +21,8 @@ import { authGuard } from './application/core/authentication';
                     { path: 'documentation', loadChildren: () => import('./demo/components/documentation/documentation.module').then(m => m.DocumentationModule) },
                     { path: 'blocks', loadChildren: () => import('./demo/components/primeblocks/primeblocks.module').then(m => m.PrimeBlocksModule) },
                     { path: 'pages', loadChildren: () => import('./demo/components/pages/pages.module').then(m => m.PagesModule) },
-                    { path: 'administration', loadChildren: () => import('./application/modules/administration/administration.module').then(m => m.AdministrationModule) }
+                    { path: 'administration', loadChildren: () => import('./application/modules/administration/administration.module').then(m => m.AdministrationModule) },
+                    { path: 'examination', loadChildren: () => import('./application/modules/examination/examination.module').then(m => m.ExaminationModule) }
                 ]
             },
              // { path: 'auth', loadChildren: () => import('./demo/components/auth/auth.module').then(m => m.AuthModule) },

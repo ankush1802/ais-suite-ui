@@ -1,0 +1,32 @@
+<h1>Examination Dashboard</h1>
+
+<div class="grid">
+    <div class="col-12 xl:col-12">
+        <div class="card">
+            <h5>Recent Exams</h5>
+            <p-table [value]="examinations$ | async" [paginator]="true" [rows]="5" responsiveLayout="scroll">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Id</th>
+                        <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="price">Code <p-sortIcon field="price"></p-sortIcon></th>
+                        <th>Action</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-exam>
+                    <tr>
+                        <td style="width: 15%; min-width: 5rem;">
+                            {{exam.id}}
+                        </td>
+                        <td style="width: 35%; min-width: 7rem;">{{exam.name}}</td>
+                        <td style="width: 35%; min-width: 8rem;">{{exam.code}}</td>
+                        <td style="width: 15%;">
+                            <button (click)="startExamination(exam)" pButton pRipple type="button" icon="pi pi-play" class="p-button p-component p-button-text p-button-icon-only"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        
+    </div>
+</div>

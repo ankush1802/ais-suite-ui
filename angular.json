@@ -3,7 +3,7 @@
     "version": 1,
     "newProjectRoot": "projects",
     "projects": {
-        "sakai-ng": {
+        "ais-suite": {
             "projectType": "application",
             "schematics": {
                 "@schematics/angular:component": {
@@ -17,7 +17,7 @@
                 "build": {
                     "builder": "@angular-devkit/build-angular:browser",
                     "options": {
-                        "outputPath": "dist/sakai-ng",
+                        "outputPath": "dist/ais-suite",
                         "index": "src/index.html",
                         "main": "src/main.ts",
                         "polyfills": [
@@ -36,7 +36,7 @@
                     },
                     "configurations": {
                         "production": {
-                            "baseHref": "/ais-suite-ui/",
+                            "baseHref": "/",
                             "budgets": [
                                 {
                                     "type": "initial",
@@ -64,12 +64,17 @@
                 },
                 "serve": {
                     "builder": "@angular-devkit/build-angular:dev-server",
+                    "options": {
+                        "sslKey": "./ssl/server.key",
+                        "sslCert": "./ssl/server.crt",
+                        "ssl" : false
+                    },
                     "configurations": {
                         "production": {
-                            "buildTarget": "sakai-ng:build:production"
+                            "buildTarget": "ais-suite:build:production"
                         },
                         "development": {
-                            "buildTarget": "sakai-ng:build:development"
+                            "buildTarget": "ais-suite:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
@@ -77,7 +82,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "buildTarget": "sakai-ng:build"
+                        "buildTarget": "ais-suite:build"
                     }
                 },
                 "test": {
@@ -104,6 +109,6 @@
         }
     },
     "cli": {
-      "analytics": "ae403329-e772-4f46-b04d-90b1e6b3f6ac"
+        "analytics": "ae403329-e772-4f46-b04d-90b1e6b3f6ac"
     }
 }

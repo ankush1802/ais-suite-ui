@@ -1,0 +1,19 @@
+<div class="card" *ngIf="vm$ | async as vm">
+  <h1 *ngIf="vm.examination">{{ vm.examination.name }}</h1>
+  <h2 *ngIf="vm.examination">{{ vm.examination.description }}</h2>
+  <form class="flex flex-column gap-3" [formGroup]="formGroup">
+    <div *ngFor="let $question of vm.examination.questions; let i = index">
+      <p-card header="{{$question.question}}" *ngIf="vm.examination && currentQuestionIndex == i">
+        <div *ngFor="let $option of $question.options" class="field-checkbox">
+          <p-radioButton [inputId]="$option" [value]="$option" formControlName="selectedCategory" />
+          <label [for]="$option" class="ml-2">
+            {{ $option }}
+          </label>
+        </div>
+        <div class="flex gap-3 mt-1">
+          <p-button (click)="SubmitAnswer(i)" label="Submit" />
+        </div>
+      </p-card>
+    </div>
+  </form>
+</div>

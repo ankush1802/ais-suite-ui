@@ -28,7 +28,7 @@ export class AppTopBarComponent {
         this.user = this.auth.getUser();
         this.menuToolbarItems = [
             {
-                label: this.user.username,
+                label: this.user.name,
                 icon: 'pi pi-fw pi-user',
                 items: [
                     {
@@ -48,7 +48,6 @@ export class AppTopBarComponent {
         ];
     }
     logout() {
-        debugger;
         this.auth.logout();
         this.router.navigateByUrl('/auth/login');
     }

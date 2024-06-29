@@ -88,7 +88,7 @@ export class EntityListComponent implements OnInit {
         this.buildAndQuery();
     }
     pageChange(event: any) {
-        this.pageIndex = event.first + 1;
+        this.pageIndex = event.first / event.rows + 1;
         this.pageSize = event.rows;
     }
     //#endregion

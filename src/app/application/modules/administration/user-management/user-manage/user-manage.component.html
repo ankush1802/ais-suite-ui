@@ -70,12 +70,12 @@
                                 autofocus
                                 [ngClass]="{
                                     'ng-invalid ng-dirty':
-                                        submitted && !user.email
+                                        submitted && userForm.get('email')?.errors?.required
                                 }"
                             />
                             <small
                                 class="ng-dirty ng-invalid p-error block"
-                                *ngIf="submitted && !user.email"
+                                *ngIf="submitted && userForm.get('email')?.errors?.required"
                                 >Email is required.</small
                             >
                         </div>
@@ -89,12 +89,12 @@
                                 required
                                 [ngClass]="{
                                     'ng-invalid ng-dirty':
-                                        submitted && !user.firstname
+                                        submitted && userForm.get('firstname')?.errors?.required
                                 }"
                             />
                             <small
                                 class="ng-dirty ng-invalid  p-error block"
-                                *ngIf="submitted && !user.firstname"
+                                *ngIf="submitted && userForm.get('firstname')?.errors?.required"
                                 >Firstname is required.</small
                             >
                         </div>

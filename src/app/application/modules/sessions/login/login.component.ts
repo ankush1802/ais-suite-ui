@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { Message } from 'primeng/api';
 import { filter } from 'rxjs';
 import { AuthService } from 'src/app/application/core/authentication';
 import { LayoutService } from 'src/app/layout/service/app.layout.service';
@@ -24,6 +25,7 @@ export class LoginComponent {
     rememberMe :boolean;
     password!: string;
     email!: string;
+    msgs: Message[] = [];
 
     constructor(
         public layoutService: LayoutService,
@@ -47,8 +49,8 @@ export class LoginComponent {
                 },
                 error: (errorRes: HttpErrorResponse) => {
                     if (errorRes.status === 401) {
-                        alert("Invalid Credentials!!");
-
+                        this.msgs = [];
+                        this.msgs.push({ severity: 'error', summary: 'Error Message', detail: 'Invalid Credentials!!' });
                     }
                     this.isSubmitting = false;
                 },

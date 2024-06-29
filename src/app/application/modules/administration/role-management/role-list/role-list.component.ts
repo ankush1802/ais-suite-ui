@@ -83,17 +83,17 @@ export class RoleListComponent implements OnInit {
         this.buildAndQuery();
     }
     pageChange(event: any) {
-        this.pageIndex = event.first + 1;
+        this.pageIndex = event.first / event.rows + 1;
         this.pageSize = event.rows;
     }
     //#endregion
 
     //#region Role Crud
     openNew() {
-        this.router.navigateByUrl('/administration/manage-role');
+        this.router.navigateByUrl('/ais-suite/administration/manage-role');
     }
     editRole(role: RolesList) {
-        this.router.navigateByUrl(`/administration/manage-role/${role.id}`);
+        this.router.navigateByUrl(`/ais-suite/administration/manage-role/${role.id}`);
     }
     deleteRoleDialog: boolean = false;
     msgDeleteRoleConfirmationDialog: string;

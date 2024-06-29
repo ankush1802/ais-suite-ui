@@ -5,6 +5,7 @@ import { UserListComponent } from './user-list/user-list.component';
 import { ManageUserComponent } from './user-manage/user-manage.component';
 import { UserService } from './user.service';
 import { CommonService } from 'src/app/application/common/shared-services/common.service';
+import { CsvService } from 'src/app/application/common/shared-services/csv.services';
 @NgModule({
     imports: [
         SharedModule
@@ -14,7 +15,8 @@ import { CommonService } from 'src/app/application/common/shared-services/common
      providers: [
         MessageService,
         CommonService,
-        UserService
+        UserService,
+        CsvService
     ]
 })
 export class UserModule { }

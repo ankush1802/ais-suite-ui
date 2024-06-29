@@ -16,7 +16,6 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
 import { GlobalTreeSearch } from 'src/app/application/common/app-util';
-import { CommonService } from 'src/app/application/common/shared-services/common.service';
 import { AuthService, User } from 'src/app/application/core/authentication';
 
 @Component({
@@ -106,7 +105,6 @@ export class ManageRoleComponent implements OnInit {
         private fb: FormBuilder,
         private activatedRoute: ActivatedRoute,
         private router: Router,
-        private commonProvider:  CommonService,
         private auth: AuthService
     ) {
         this.buildRoleFormGroup();
